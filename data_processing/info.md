@@ -1,4 +1,6 @@
-## FAQ about this data
+## FAQ
+
+#### What does the data look like
 
 The general structure of the data looks like this:
 
@@ -19,7 +21,30 @@ Where:
 - GPS_LONGITUDE: Longitude of a stop?
 - GPS_LATITUDE: Latitude of a stop?
 
-#### 1. How much data is there? how many MB (unzipped), how many rows/events?
+#### How much time does it take <x> to parse this data?
+
+Python: The data takes ~8s to process with python 3.8 on a 64bit i7 w/ 16GB RAM machine running MacOs:
+
+With `time`:
+
+```bash
+# Note: Time includes loading pipenv and libraries via pipenv (not really sure what the overhead is)
+time pipenv run python main.py
+
+real    0m8.737s
+user    0m7.174s
+```
+
+With `[hyperfine]`(https://github.com/sharkdp/hyperfine)
+
+```bash
+$ hyperfine --warmup 3 'pipenv run python main.py'
+Benchmark #1: pipenv run python main.py
+  Time (mean ± σ):      8.526 s ±  0.119 s    [User: 7.145 s, System: 1.647 s]
+  Range (min … max):    8.427 s …  8.752 s    10 runs
+```
+
+#### How much data is there? how many MB (unzipped), how many rows/events?
 
 There's approximately 500 MB unzipped at the time of writing (4/3)
 
@@ -45,28 +70,7 @@ $ python main.py
 
 ```
 
-Notably the data takes ~8s to process with python 3.8 on a 64bit i7 w/ 16GB RAM machine running MacOs:
-
-With `time`:
-
-```bash
-# Note: Time includes loading pipenv and libraries via pipenv (not really sure what the overhead is)
-time pipenv run python main.py
-
-real    0m8.737s
-user    0m7.174s
-```
-
-With `[hyperfine]`(https://github.com/sharkdp/hyperfine)
-
-```bash
-$ hyperfine --warmup 3 'pipenv run python main.py'
-Benchmark #1: pipenv run python main.py
-  Time (mean ± σ):      8.526 s ±  0.119 s    [User: 7.145 s, System: 1.647 s]
-  Range (min … max):    8.427 s …  8.752 s    10 runs
-```
-
-#### 2. The data appears to be event data for C-Tran busses. How many vehicles are tracked?
+#### The data appears to be event data for C-Tran busses. How many vehicles are tracked?
 
 Assuming the each vehicle has a unique id in the `VEHICLE_ID` column:
 
@@ -78,34 +82,38 @@ Assuming the each vehicle has a unique id in the `VEHICLE_ID` column:
     # 117
 ```
 
-#### 3. how many routes?
+#### How many routes?
 
-#### 4. Which dates are tracked, are these weekdays or weekend days?
+#### Which dates are tracked, are these weekdays or weekend days?
 
-#### 5. Using estimation or extrapolation how many events would you expect to need to process for a typical day? per week? per month? per year?
+#### Using estimation or extrapolation how many events would you expect to need to process for a typical day? per week? per month? per year?
 
-#### 6. How many different vehicles are tracked?
+#### How many different vehicles are tracked?
 
-#### 7. Are the same vehicles tracked each day or does it change from day to day?
+See [number 2](#2)
 
-#### 8. any guess as to what the "METERS" column means?
+#### Are the same vehicles tracked each day or does it change from day to day?
 
-#### 9. The ACT_TIME columns seems to represent the time at which the event occurred. what are its units?
+#### Any guess as to what the "METERS" column means?
 
-#### 10. Can you convert this to datetime format?
+At this point in time, I assume it's the meters the vehicle has travelled over the month. It's hard to say without a larger dataset/input from C-Tran.
 
-#### 11. What is the earliest and latest event for each route and vehicle for each day?
+#### The ACT_TIME columns seems to represent the time at which the event occurred. what are its units?
 
-#### 12. Are the events spaced evenly in time or are the events more frequent at specific times of day (for a given vehicle)?
+#### Relating to last: Can you convert this to datetime format?
 
-#### 13. Do the GPS_LONGITUDE and GPS_LATITUDE values correspond to locations within Clark County?
+#### What is the earliest and latest event for each route and vehicle for each day?
 
-#### 14. What is the bounding box for the GPS locations. That is what are the minimum and maximum latitude and longitude coordinates? If you plot these on a map does the bounding box roughly correspond #### with Clark county?
+#### Are the events spaced evenly in time or are the events more frequent at specific times of day (for a given vehicle)?
 
-#### 15. Can you find the bounding box for a given route? can you compute the birds-eye distance for a bounding box? that is, the distance from the min latitude, min longitude to the max latitude max longitude.
+#### Do the GPS_LONGITUDE and GPS_LATITUDE values correspond to locations within Clark County?
 
-#### 16. Which route has the largest birds-eye distance? the smallest distance?
+#### What is the bounding box for the GPS locations. That is what are the minimum and maximum latitude and longitude coordinates? If you plot these on a map does the bounding box roughly correspond #### with Clark county?
 
-#### 17. Which vehicle has the largest distance? the smallest distance?
+#### Can you find the bounding box for a given route? can you compute the birds-eye distance for a bounding box? that is, the distance from the min latitude, min longitude to the max latitude max longitude.
 
-#### 18. How many trips does a vehicle take per day? min, max, median, mean, stddev
+#### Which route has the largest birds-eye distance? the smallest distance?
+
+#### Which vehicle has the largest distance? the smallest distance?
+
+#### How many trips does a vehicle take per day? min, max, median, mean, stddev
