@@ -16,4 +16,4 @@ if __name__ == "__main__":
 
     q1 = df.shape
     q2 = len(df["VEHICLE_ID"].unique())
-    print(q2)
+    print(df)
