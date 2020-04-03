@@ -4,6 +4,10 @@
 # Excepot for...
 !README.md
 
+!data_processing/
+!data_processing/python
+!data_processing/python/Pipfile*
+!data_processing/python/*.py
 
 # And of course, this fine file
 !.gitignore
