@@ -8,6 +8,7 @@
 !data_processing/python
 !data_processing/python/Pipfile*
 !data_processing/python/*.py
+!data_processing/*.md
 
 # And of course, this fine file
 !.gitignore
