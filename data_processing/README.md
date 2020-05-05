@@ -1,6 +1,6 @@
 ### Loading data into postgres:
 
-Via postgres container:
+#### Postgres Container Initialization:
 
 ```bash
 docker run --name ctran_db -d -e POSTGRES_USER=ctran POSTGRES_PASSWORD=ctran POSTGRES_DB=ctran postgres:latest
@@ -44,6 +44,28 @@ CREATE TABLE bus_data (
     act_time INTEGER,
     gps_longitude NUMERIC(10, 6),
     gps_latitude NUMERIC(10, 6),
+    -- postgis geography function
+    geog GEOGRAPHY(POINT);
     constraint bus_data_pkey primary key (id)
 );
 ```
+
+It's also important to note the longitude and latitude values are numeric values with a _precision_ of 10 and a _scale_ of 6. That is, no lat/long values can exceed 10 digits and the mantissa can be at most 6 digits.
+
+TODO: Import and use PostGIS for geo calculations.
+
+#### PostGIS container initialization
+
+The postgis container is based of the [`kartoza:latest`](https://hub.docker.com/r/kartoza/postgis/).
+
+```bash
+docker run --name ctran_db -d -e POSTGRES_USER=ctran -e POSTGRES_PASS=ctran -e POSTGRES_DBNAME=ctran -e ALLOW_IP_RANGE='0.0.0.0/0' -p '5432:5432' -v pg_data:/var/lib/postgresql kartoza/postgis
+```
+
+Connect to it:
+
+```bash
+docker exec -it ctran_db psql -U ctran
+```
+
+select ST_Area(geog) / 0.3048 ^ 2 sqft, ST_Area(the_geog) sqm from somegeogtable;
