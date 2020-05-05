@@ -7,6 +7,7 @@
 !client/
 !client/src/
 !client/src/*.ts
+!client/src/*.css
 !client/index.html
 !client/tsconfig.json
 !client/package.json
