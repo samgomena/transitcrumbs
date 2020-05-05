@@ -1,0 +1,17 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.6.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "leaflet": "^1.6.0"
+  }
+}

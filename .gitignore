@@ -4,6 +4,14 @@
 # Excepot for...
 !README.md
 
+!client/
+!client/src/
+!client/src/*.ts
+!client/index.html
+!client/tsconfig.json
+!client/package.json
+!client/yarn.lock
+
 !data_processing/
 !data_processing/python
 !data_processing/python/Pipfile*
