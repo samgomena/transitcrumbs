@@ -74,6 +74,8 @@ export default class MovingMarker extends L.Marker {
     const distances = [];
     let totalDistance = 0;
 
+    this._latlngs;
+
     for (let i = 0; i < lastIndex; i++) {
       const distance = this._latlngs[i + 1].distanceTo(this._latlngs[i]);
       distances.push(distance);
@@ -86,17 +88,10 @@ export default class MovingMarker extends L.Marker {
     return durations;
   }
 
-  isRunning(): boolean {
-    return this._state === State.RUNNING;
-  }
-
-  isEnded(): boolean {
-    return this._state === State.ENDED;
-  }
-
   isStarted = (): boolean => this._state !== State.NOT_STARTED;
-
+  isRunning = (): boolean => this._state === State.RUNNING;
   isPaused = (): boolean => this._state === State.PAUSED;
+  isEnded = (): boolean => this._state === State.ENDED;
 
   start(): void {
     if (this.isRunning()) {
@@ -140,14 +135,14 @@ export default class MovingMarker extends L.Marker {
 
     this._stopAnimation();
 
-    if (typeof elapsedTime === "undefined") {
+    if (elapsedTime === undefined) {
       // user call
       elapsedTime = 0;
       this._updatePosition();
     }
 
     this._state = State.ENDED;
-    this.fire("end", { elapsedTime: elapsedTime });
+    this.fire("end", { elapsedTime });
   }
 
   _startAnimation(): void {
@@ -182,10 +177,9 @@ export default class MovingMarker extends L.Marker {
     }
   }
 
-  _interpolatePosition(p1: L.LatLng, p2: L.LatLng, t: number): L.LatLng {
+  _interpolatePosition(t: number): L.LatLng {
+    const [p1, p2] = this._currentLine;
     const k = t / this._currentDuration;
-    // k = k > 0 ? k : 0;
-    // k = k > 1 ? 1 : k;
 
     // Clamp k b/t 0 and 1
     const kClamped = Math.min(Math.max(k, 0), 1);
@@ -268,13 +262,9 @@ export default class MovingMarker extends L.Marker {
       return;
     }
 
-    if (elapsedTime != null) {
+    if (elapsedTime !== null) {
       // compute the position
-      const p = this._interpolatePosition(
-        this._currentLine[0],
-        this._currentLine[1],
-        elapsedTime
-      );
+      const p = this._interpolatePosition(elapsedTime);
       this.setLatLng(p);
     }
 
