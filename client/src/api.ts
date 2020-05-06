@@ -1,4 +1,4 @@
-export const route_one: number[][] = [
+export const route_one: L.LatLngTuple[] = [
   [45.637782, -122.604918],
   [45.63752, -122.604967],
   [45.63707, -122.604947],
