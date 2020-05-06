@@ -1,7 +1,22 @@
-import * as L from "leaflet";
-import "leaflet/dist/leaflet.css";
+/**
+ * A leaflet plugin for animating a moving marker along a polyline
+ *
+ * Original source: https://github.com/ewoken/Leaflet.MovingMarker/blob/master/MovingMarker.js
+ * Plugin docs: https://github.com/Leaflet/Leaflet/blob/master/PLUGIN-GUIDE.md#plugin-api
+ */
 
-// Code here taken and modified from https://github.com/ewoken/Leaflet.MovingMarker/blob/master/MovingMarker.js
+import * as L from "leaflet";
+
+// Manually define marker icon b/c parcel doesn't know how to replace the url properly in the bundle
+// See: https://stackoverflow.com/a/57093376/4668680
+const markerIcon = L.icon({
+  iconSize: [25, 41],
+  iconAnchor: [10, 41],
+  popupAnchor: [2, -40],
+  // specify the path here
+  iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png",
+});
 
 enum State {
   NOT_STARTED = 0,
@@ -33,10 +48,13 @@ export default class MovingMarker extends L.Marker {
 
   constructor(
     latlngs: L.LatLngTuple[],
-    durations?: number[],
+    durations: number | number[] = 5000,
     options?: MovingMarkerOptions
   ) {
     super(latlngs[0], options);
+
+    // Manually set marker
+    this.setIcon(markerIcon);
 
     this._latlngs = latlngs.map((e) => L.latLng(e));
     if (options !== undefined) {
@@ -47,7 +65,7 @@ export default class MovingMarker extends L.Marker {
     if (Array.isArray(durations)) {
       this._durations = durations;
     } else {
-      this._durations = this._generateDurations(5000);
+      this._durations = this._generateDurations(durations);
     }
   }
 
@@ -268,7 +286,7 @@ export default class MovingMarker extends L.Marker {
 }
 
 L.movingMarker = (
-  latLngs: L.LatLng[],
+  latLngs: L.LatLngTuple[],
   durations: number[],
   options: MovingMarkerOptions
 ) => new MovingMarker(latLngs, durations, options);
