@@ -8,6 +8,7 @@
     "build": "parcel build index.html"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.5.12",
     "parcel-bundler": "^1.6.1",
     "typescript": "^3.8.3"
   },
