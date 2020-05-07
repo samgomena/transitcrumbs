@@ -10,6 +10,8 @@ import {
   polyline,
 } from "leaflet";
 
+import * as L from "leaflet";
+
 import MovingMarker from "./marker";
 import { route_one } from "./api";
 import { indexToHue } from "./utils";
@@ -71,30 +73,6 @@ export default () => {
   });
 
   line.bindPopup(p);
-
-  // control contains more stuff than what is in the typedefs
-  // const lc = (control as any)
-  //   .locate({
-  //     icon: "icon-location",
-  //     iconLoading: "icon-spinner animate-spin",
-  //     setView: "once",
-  //     clickBehavior: {
-  //       inView: "setView",
-  //       outOfView: "setView"
-  //     },
-  //     //keepCurrentZoomLevel: true,
-  //     onLocationError: (err: Error) => console.log(err.message),
-  //     locateOptions: {
-  //       enableHighAccuracy: true,
-  //       maxZoom: 14
-  //     }
-  //   })
-  //   .addTo(map);
-
-  // // Needed to make setView: 'once' work after programmatic .start() invocation
-  // lc._justClicked = true;
-
-  // lc.start();
 
   return map;
 };
