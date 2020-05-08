@@ -15,10 +15,6 @@ import { route_one } from "./api";
 import { indexToHue } from "./utils";
 import pkg from "../package.json";
 
-const r = {
-  polyline: route_one,
-};
-
 export default () => {
   // Initialize the map
   const map = LeafletMap("map", {});
@@ -37,14 +33,14 @@ export default () => {
     maxNativeZoom: 18,
     minZoom: 8,
     minNativeZoom: 8,
-    attribution: `v${pkg.version} | &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`,
+    attribution: `v${pkg.version} | &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a>`,
   }).addTo(map);
 
-  const marker1 = new MovingMarker(r.polyline).addTo(map);
+  const marker1 = new MovingMarker(route_one, 30000, { loop: true }).addTo(map);
 
-  const hue = indexToHue(0, r.polyline.length);
+  const hue = indexToHue(0, route_one.length);
   const color = `hsla(${hue}, 70%, 42%, 0.75)`;
-  const line = polyline(r.polyline, {
+  const line = polyline(route_one, {
     color,
     weight: 4,
   }).addTo(map);
