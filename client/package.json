@@ -17,6 +17,7 @@
     "apollo-client": "^2.6.8",
     "apollo-link-http": "^1.5.17",
     "graphql": "^15.0.0",
-    "leaflet": "^1.6.0"
+    "leaflet": "^1.6.0",
+    "react": "^16.13.1"
   }
 }
