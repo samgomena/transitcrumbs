@@ -1,12 +1,17 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>C-Tran</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8" />
   </head>
 
   <body>
-    <div id="map"></div>
+    <div id="root">
+      <!-- Not sure why, but deleting this breaks everything -->
+      <div id="map"></div>
+    </div>
 
-    <script src="src/index.ts"></script>
+    <script src="src/index.tsx"></script>
   </body>
 </html>
