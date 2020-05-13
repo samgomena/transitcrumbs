@@ -7,7 +7,7 @@ import Pane from "react-split-pane/lib/Pane";
 
 import { client } from "./api";
 import Map from "./Map/Map";
-import { FilterForm } from "./Search/Search";
+import { FilterForm, Breadcrumbs } from "./Search/Search";
 
 import "leaflet/dist/leaflet.css";
 import "./index.css";
@@ -17,11 +17,9 @@ function App() {
     <ApolloProvider client={client}>
       <SplitPane split="vertical" primary="second">
         <Pane initialSize="20%" minSize="10%">
-          <h2>My first Apollo app 🚀</h2>
-          <div>
-            {/* <SearchBar /> */}
-            <FilterForm />
-          </div>
+          <h2>Search</h2>
+          <FilterForm />
+          <Breadcrumbs />
         </Pane>
         <Pane initialSize="80%" minSize="50%" maxSize="100%">
           <Map />
