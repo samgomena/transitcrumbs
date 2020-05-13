@@ -7,14 +7,10 @@ import Pane from "react-split-pane/lib/Pane";
 
 import { client } from "./api";
 import Map from "./Map/Map";
-import { Breadcrumbs } from "./search";
-
-import initMap from "./map";
+import { FilterForm } from "./Search/Search";
 
 import "leaflet/dist/leaflet.css";
 import "./index.css";
-
-const map = initMap();
 
 function App() {
   return (
@@ -22,6 +18,10 @@ function App() {
       <SplitPane split="vertical" primary="second">
         <Pane initialSize="20%" minSize="10%">
           <h2>My first Apollo app 🚀</h2>
+          <div>
+            {/* <SearchBar /> */}
+            <FilterForm />
+          </div>
         </Pane>
         <Pane initialSize="80%" minSize="50%" maxSize="100%">
           <Map />
