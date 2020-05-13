@@ -3,7 +3,11 @@ import React from "react";
 import * as L from "leaflet";
 import { Marker } from "react-leaflet";
 
-const BusMarker = ({ position }: { position: L.LatLng }) => {
+type BusMarkerProps = {
+  position: [number, number];
+};
+
+const BusMarker = (props: BusMarkerProps) => {
   const markerIcon = L.icon({
     iconSize: [25, 41],
     iconAnchor: [10, 41],
@@ -12,6 +16,8 @@ const BusMarker = ({ position }: { position: L.LatLng }) => {
     iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
     shadowUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png",
   });
+
+  const { position } = props;
   return <Marker position={position} icon={markerIcon} />;
 };
 
