@@ -7,7 +7,7 @@ const link = new HttpLink({
   uri: "http://localhost:8080/v1/graphql",
 });
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   // Provide required constructor fields
   cache: cache,
   link: link,
