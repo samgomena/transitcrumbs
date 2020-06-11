@@ -7,7 +7,7 @@ import Pane from "react-split-pane/lib/Pane";
 
 import { client } from "./api";
 import Map from "./Map/Map";
-import { Routes, Trips } from "./Search/Search";
+import { Routes, Breakdown } from "./Search/Search";
 
 import "leaflet/dist/leaflet.css";
 import "./index.css";
@@ -16,6 +16,7 @@ function App() {
   const [route, setRoute] = useState<number | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [vehicle, setVehicle] = useState<number | null>(null);
+  const [trip, setTrip] = useState<number | null>(null);
 
   console.log(`route: ${route}, date: ${date}, vehicle: ${vehicle}`);
   return (
@@ -31,7 +32,7 @@ function App() {
           >
             <h2>Search</h2>
             <Routes setRoute={setRoute} />
-            <Trips
+            <Breakdown
               route_number={route}
               date={date}
               setDate={setDate}
