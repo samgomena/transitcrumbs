@@ -95,9 +95,36 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
     setState({ ...state, isPlaying: !state.isPlaying });
   };
 
+  const onStepForwardClicked = (): void => {
+    setTick((prevTick) => {
+      const nextIdx =
+        prevTick.idx + 1 >= positions.length ? 0 : prevTick.idx + 1;
+      return {
+        ...prevTick,
+        idx: nextIdx,
+        position: positions[nextIdx],
+        timestamp: timestamps[nextIdx],
+      };
+    });
+  };
+
+  const onStepBackwardClicked = (): void => {
+    setTick((prevTick) => {
+      const nextIdx =
+        prevTick.idx - 1 <= 0 ? positions.length - 1 : prevTick.idx - 1;
+      return {
+        ...prevTick,
+        idx: nextIdx,
+        position: positions[nextIdx],
+        timestamp: timestamps[nextIdx],
+      };
+    });
+  };
+
   const onResetClick = (): void => {
-    setTick(() => ({
-      ...tick,
+    setTick((prevTick) => ({
+      ...prevTick,
+      idx: 0,
       position: positions[0],
       timestamp: timestamps[0],
     }));
@@ -113,7 +140,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             display: "flex",
             flexDirection: "row",
             boxSizing: "border-box",
-            width: "20rem",
+            width: "25rem",
             borderRadius: "4px",
           }}
         >
@@ -121,9 +148,11 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             {/* {formatter.format(new Date(tick.timestamp))} UTC */}
             {formatter.format(new Date(tick.timestamp))} UTC
           </div>
+          <button onClick={onStepBackwardClicked}>{"<"}</button>
           <button onClick={onPlayPauseClick}>
             {state.isPlaying ? "Pause" : "Play"}
           </button>
+          <button onClick={onStepForwardClicked}>{">"}</button>
           <button onClick={onResetClick}>Reset</button>
         </div>
       </Control>
