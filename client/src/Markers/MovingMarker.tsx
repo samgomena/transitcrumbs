@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import * as L from "leaflet";
 import { Marker, MapLayerProps } from "react-leaflet";
-import Control from "@skyeer/react-leaflet-custom-control";
+import Control from "../Control/Control";
 
 import { markerIcon } from "./moving_marker";
 
@@ -18,10 +18,14 @@ type MovingMarkerProps = {
   zIndexOffset?: number;
 } & MapLayerProps;
 
-type LatLng = {
+type Breadcrumb = {
   lat: number;
   lon: number;
+  act_time: number;
 };
+
+type Positions = Array<L.LatLngTuple>;
+type Timestamps = Array<number>;
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -38,7 +42,10 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
   const [positions, timestamps] = useMemo(
     () =>
       breadcrumbs.reduce(
-        ([positions, timestamps], { lat, lon, act_time }) => {
+        (
+          [positions, timestamps]: [Positions, Timestamps],
+          { lat, lon, act_time }: Breadcrumb
+        ) => {
           // Bail early if we've got null coordinates
           if (lat === null || lon === null) return [positions, timestamps];
 
