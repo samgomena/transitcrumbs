@@ -879,6 +879,17 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@skyeer/react-leaflet-custom-control@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@skyeer/react-leaflet-custom-control/-/react-leaflet-custom-control-0.0.6.tgz#d1956f0e0e9c31eba1a6da01275858f1b535326d"
+  integrity sha512-nLq0ED2XDaJKfe2S72mPJyzsWx5GvmT8YCQV4hRjc8X7zReMYW5555OGNJKhYp/I2CNngCnIvHwwff4INBYt3g==
+  dependencies:
+    leaflet "^1.3.1"
+    prop-types "^15.6.2"
+    react "^16.4.1"
+    react-dom "^16.4.1"
+    react-leaflet "^2.0.0"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -967,13 +978,6 @@
   dependencies:
     "@types/leaflet" "*"
     "@types/react" "*"
-
-"@types/react-split-pane@^0.1.67":
-  version "0.1.67"
-  resolved "https://registry.yarnpkg.com/@types/react-split-pane/-/react-split-pane-0.1.67.tgz#b209a96bbf868a42ca170d3f8bbd94e371a6af6c"
-  integrity sha512-2vq9mohqYZ7kR+XcedfjyI2M7/E8W5owr0KupGGP+TfFp/O9f6c/S06MCB3FKWiBwazA7+Zyj50OTxvYy1kGLA==
-  dependencies:
-    react-split-pane "*"
 
 "@types/react@*", "@types/react@^16.9.35":
   version "16.9.35"
@@ -3575,7 +3579,7 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-leaflet@^1.6.0:
+leaflet@^1.3.1, leaflet@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.6.0.tgz#aecbb044b949ec29469eeb31c77a88e2f448f308"
   integrity sha512-CPkhyqWUKZKFJ6K8umN5/D2wrJ2+/8UIpXppY7QDnUZW5bZL5+SEI2J7GBpwh4LIupOKqbNSQXgqmrEJopHVNQ==
@@ -4802,7 +4806,7 @@ react-datepicker@^2.16.0:
     react-onclickoutside "^6.9.0"
     react-popper "^1.3.4"
 
-react-dom@^16.13.1, react-dom@^16.2.0:
+react-dom@^16.13.1, react-dom@^16.2.0, react-dom@^16.4.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
   integrity sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag==
@@ -4824,7 +4828,7 @@ react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-leaflet@^2.7.0:
+react-leaflet@^2.0.0, react-leaflet@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-2.7.0.tgz#0e0e452a4903029f0bb564771eab8cf9db8e4517"
   integrity sha512-pMf5eRyWU8RH9HohM2i0NZymcWHraJA1m6iMFYu94/01PAaBJpOyxORZJmN6cV9dBzkVWaLjAAHTNmxbwIpcfw==
@@ -4833,11 +4837,6 @@ react-leaflet@^2.7.0:
     fast-deep-equal "^3.1.1"
     hoist-non-react-statics "^3.3.2"
     warning "^4.0.3"
-
-react-lifecycles-compat@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
-  integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 react-onclickoutside@^6.9.0:
   version "6.9.0"
@@ -4857,15 +4856,6 @@ react-popper@^1.3.4:
     typed-styles "^0.0.7"
     warning "^4.0.2"
 
-react-split-pane@*:
-  version "0.1.91"
-  resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-0.1.91.tgz#18b9ef23b2ff225c957f77b6b096e458d85312ae"
-  integrity sha512-8U56HOKQGFlvXXT1PaHbijjYy2W8g0iQaHC99Q2aV4yYfvUURcRGyfPKN3scGkbYN2pvy3qyoEwHyewUmR1VbQ==
-  dependencies:
-    prop-types "^15.7.2"
-    react-lifecycles-compat "^3.0.4"
-    react-style-proptype "^3.2.2"
-
 react-split-pane@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-2.0.3.tgz#2a4d01ecc6fbba4328fe12139daa8c4a9a6eaa7c"
@@ -4880,14 +4870,7 @@ react-split-pane@^2.0.3:
     react-dom "^16.2.0"
     styled-components "^2.4.0"
 
-react-style-proptype@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/react-style-proptype/-/react-style-proptype-3.2.2.tgz#d8e998e62ce79ec35b087252b90f19f1c33968a0"
-  integrity sha512-ywYLSjNkxKHiZOqNlso9PZByNEY+FTyh3C+7uuziK0xFXu9xzdyfHwg4S9iyiRRoPCR4k2LqaBBsWVmSBwCWYQ==
-  dependencies:
-    prop-types "^15.5.4"
-
-react@^16.13.1, react@^16.2.0:
+react@^16.13.1, react@^16.2.0, react@^16.4.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
   integrity sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==
