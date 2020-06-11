@@ -59,11 +59,15 @@ const Map: FunctionComponent<MapProps> = ({
         <>
           <MovingMarker date={date} breadcrumbs={data.breadcrumbs} />
           {data.unique_trips.map(
-            ({ event_no_trip: unique_trip }, idx: number) => (
+            (
+              { event_no_trip: unique_trip }: { event_no_trip: number },
+              idx: number
+            ) => (
               <Polyline
                 key={idx}
                 positions={data.breadcrumbs.filter(
-                  ({ event_no_trip }) => unique_trip === event_no_trip
+                  ({ event_no_trip }: { event_no_trip: number }) =>
+                    unique_trip === event_no_trip
                 )}
                 color={colors[idx]}
               />
