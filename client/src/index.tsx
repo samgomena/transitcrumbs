@@ -16,7 +16,7 @@ function App() {
   const [route, setRoute] = useState<number | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [vehicle, setVehicle] = useState<number | null>(null);
-  const [trip, setTrip] = useState<number | null>(null);
+  const [trips, setTrips] = useState<number | null>(null);
 
   console.log(`route: ${route}, date: ${date}, vehicle: ${vehicle}`);
   return (
@@ -38,11 +38,13 @@ function App() {
               setDate={setDate}
               vehicle={vehicle}
               setVehicle={setVehicle}
+              trips={trips}
+              setTrips={setTrips}
             />
           </div>
         </Pane>
         <Pane initialSize="80%" minSize="50%" maxSize="100%">
-          <Map date={date} vehicle={vehicle} />
+          <Map date={date} vehicle={vehicle} trips={trips} />
         </Pane>
       </SplitPane>
     </ApolloProvider>
