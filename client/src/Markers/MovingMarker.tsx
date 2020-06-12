@@ -50,7 +50,10 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
           if (lat === null || lon === null) return [positions, timestamps];
 
           positions.push([lat, lon]);
-          timestamps.push(new Date(date).getTime() + act_time);
+          // Convert act_time from seconds to milliseconds
+          timestamps.push(
+            new Date(date).getTime() + act_time * 1000 - 28800000
+          );
           return [positions, timestamps];
         },
         [[], []]
@@ -147,14 +150,19 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             display: "flex",
             flexDirection: "row",
             boxSizing: "border-box",
-            width: "25rem",
+            width: "30rem",
             borderRadius: "4px",
           }}
         >
           <div style={{ marginRight: "auto" }}>
-            {/* {formatter.format(new Date(tick.timestamp))} UTC */}
-            {formatter.format(new Date(tick.timestamp))} UTC
+            {formatter.format(new Date(tick.timestamp))} GMT-08:00
           </div>
+
+          <button title="Slow Down">-</button>
+          <button title="Speed Up" style={{ marginRight: "1rem" }}>
+            +
+          </button>
+
           <button onClick={onStepBackwardClicked}>{"<"}</button>
           <button onClick={onPlayPauseClick}>
             {state.isPlaying ? "Pause" : "Play"}

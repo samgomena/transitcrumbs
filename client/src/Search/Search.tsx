@@ -10,6 +10,7 @@ import {
   AVL_CAD_TRIPS_FROM_ROUTE_AND_DATE,
   AVL_CAD_VEHICLES_FROM_ROUTE_AND_DATE,
   GET_BREADCRUMBS_FROM_VEHICLE_AND_DATE,
+  GET_BREADCRUMBS_FROM_DATE_AND_TRIPS,
   AVL_CAD_DATES,
 } from "../queries";
 
@@ -92,6 +93,7 @@ export const Breakdown = (props) => {
     trips,
     setTrips,
   } = props;
+
   if (route_number === null) return null;
 
   const { data, loading, error } = useQuery(AVL_CAD_TRIP_FROM_ROUTE, {
@@ -102,9 +104,6 @@ export const Breakdown = (props) => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading trip: {JSON.stringify(error)}</div>;
-  if (data) {
-    console.log(data.cad_avl_trips);
-  }
 
   return (
     <div>
@@ -171,6 +170,8 @@ type TripDataType = {
 
 export const Trips = ({ route_number, service_date, trips, setTrips }) => {
   if (!route_number || !service_date) return null;
+  service_date = "2020-03-11";
+  route_number = 105;
 
   const { data, loading, error } = useQuery(AVL_CAD_TRIPS_FROM_ROUTE_AND_DATE, {
     variables: {
@@ -197,11 +198,7 @@ export const Trips = ({ route_number, service_date, trips, setTrips }) => {
   if (loading) return <div>Loading trips...</div>;
   if (error) return <div>Error loading trip information</div>;
 
-  // setTrips(data.cad_avl_trips);
-
-  console.log("trip", data);
-
-  console.log(tripsByBlock);
+  console.log(trips);
 
   return (
     <div
@@ -218,10 +215,12 @@ export const Trips = ({ route_number, service_date, trips, setTrips }) => {
             padding: "4px",
             marginBottom: "4px",
           }}
+          onClick={() => setTrips(values.map(({ trip_number }) => trip_number))}
         >
-          <div>{block}</div>
+          <div style={{ fontSize: "1.2" }}>Block: {block}</div>
           {values.map(({ trip_number, vehicle_number }, idx) => (
             <div key={idx}>
+              <input type="checkbox" />
               {trip_number} {vehicle_number}
             </div>
           ))}
@@ -234,4 +233,9 @@ export const Trips = ({ route_number, service_date, trips, setTrips }) => {
 export const useBreadcrumbs = (opd_date: string, vehicle_id: number) =>
   useQuery(GET_BREADCRUMBS_FROM_VEHICLE_AND_DATE, {
     variables: { opd_date, vehicle_id },
+  });
+
+export const useTripBreadcrumbs = (opd_date: string, trips: Array<number>) =>
+  useQuery(GET_BREADCRUMBS_FROM_DATE_AND_TRIPS, {
+    variables: { opd_date, _in: trips },
   });

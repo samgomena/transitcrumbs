@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { Map as LeafletMap, TileLayer, Polyline } from "react-leaflet";
 
 import MovingMarker from "../Markers/MovingMarker";
-import { useBreadcrumbs } from "../Search/Search";
+import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
 import "leaflet/dist/leaflet.css";
 
@@ -13,12 +13,19 @@ type LatLng = {
   lon: number;
 };
 
-interface MapProps {
+type MapProps = {
   center?: [number, number];
   zoom?: number;
-  date?: Date | null;
+  date?: string | null;
   vehicle?: number | null;
-}
+};
+
+type Breadcrumb = {
+  lat: number;
+  lon: number;
+  act_time: number;
+  event_no_trip: number;
+};
 
 const colors = [
   "#2d81c4",
@@ -36,17 +43,37 @@ const colors = [
 const Map: FunctionComponent<MapProps> = ({
   center = [45.5925204, -122.6080728],
   zoom = 12,
-  // date,
+  date,
   vehicle,
+  trips,
 }) => {
   const templateUrl =
     "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
   const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`;
 
-  const date = "2020-03-17";
-  vehicle = 4028;
+  date = "2020-03-11";
+  trips = [
+    153300419,
+    153300424,
+    153300431,
+    153300453,
+    153300464,
+    153300484,
+    153300495,
+    153300512,
+    153300524,
+    153300539,
+    153300552,
+    153300570,
+    153300585,
+    153300602,
+    153300629,
+    153300641,
+    153300665,
+  ];
+  // vehicle = 4028;
 
-  const { data, loading, error } = useBreadcrumbs(date, vehicle);
+  const { data, loading, error } = useTripBreadcrumbs(date, trips);
 
   return (
     <LeafletMap
@@ -66,8 +93,10 @@ const Map: FunctionComponent<MapProps> = ({
               <Polyline
                 key={idx}
                 positions={data.breadcrumbs.filter(
-                  ({ event_no_trip }: { event_no_trip: number }) =>
-                    unique_trip === event_no_trip
+                  ({ lat, lon, event_no_trip }: Breadcrumb) =>
+                    unique_trip === event_no_trip &&
+                    lat !== null &&
+                    lon !== null
                 )}
                 color={colors[idx]}
               />

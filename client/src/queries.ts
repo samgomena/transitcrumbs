@@ -100,6 +100,32 @@ export const GET_BREADCRUMBS_FROM_VEHICLE_AND_DATE = gql`
   }
 `;
 
+export const GET_BREADCRUMBS_FROM_DATE_AND_TRIPS = gql`
+  query getBreadcrumbsFromDateAndTrips($opd_date: date, $_in: [Int!]) {
+    unique_trips: breadcrumbs(
+      where: { opd_date: { _eq: $opd_date }, event_no_trip: { _in: $_in } }
+      distinct_on: event_no_trip
+    ) {
+      event_no_trip
+    }
+    timestamps: breadcrumbs(
+      where: { opd_date: { _eq: $opd_date }, event_no_trip: { _in: $_in } }
+      order_by: { act_time: asc }
+    ) {
+      act_time
+    }
+    breadcrumbs: breadcrumbs(
+      where: { opd_date: { _eq: $opd_date }, event_no_trip: { _in: $_in } }
+      order_by: { act_time: asc, event_no_trip: asc }
+    ) {
+      lat
+      lon
+      act_time
+      event_no_trip
+    }
+  }
+`;
+
 export const DISTINCT_VEHICLES_ON_DAY = (day: string) => gql`
 query {
     breadcrumbs(where: {opd_date: {_eq: "${day}"}}, distinct_on: vehicle_id) {

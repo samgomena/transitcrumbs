@@ -16,9 +16,9 @@ const DivControl = LeafletControl.extend({
 });
 
 type ControlProps = {
-  className: string;
   children: ReactChild;
   position: string;
+  className?: string;
 } & MapControlProps;
 
 class Control extends MapControl {
