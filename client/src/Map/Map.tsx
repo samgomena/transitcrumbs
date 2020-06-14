@@ -18,6 +18,7 @@ type MapProps = {
   zoom?: number;
   date?: string | null;
   vehicle?: number | null;
+  trips?: Array<number> | null;
 };
 
 type Breadcrumb = {

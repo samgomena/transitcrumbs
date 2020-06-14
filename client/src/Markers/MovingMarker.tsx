@@ -8,14 +8,6 @@ import { markerIcon } from "./moving_marker";
 type MovingMarkerProps = {
   breadcrumbs: any;
   date: any;
-  // MapLayerProps
-  icon?: L.Icon | L.DivIcon;
-  draggable?: boolean;
-  opacity?: number;
-  // position: LatLngExpression;
-  // duration: number;
-  keepAtCenter?: boolean;
-  zIndexOffset?: number;
 } & MapLayerProps;
 
 type Breadcrumb = {
@@ -34,6 +26,15 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   minute: "numeric",
   second: "numeric",
 });
+
+const genericFps = 1000 / 60;
+const playbackFps = [genericFps / 2, genericFps];
+
+const DEFAULT_FRAME_RATE = 1000 / 60;
+const FRAME_RATES = [60, 30, 20, 15, 10, 5, 2, 1];
+const MIN_FRAME_TIMES = FRAME_RATES.map(
+  (fps) => DEFAULT_FRAME_RATE * (60 / fps) - DEFAULT_FRAME_RATE * 0.5
+);
 
 const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
   // TODO: Not sure I feel about this; it's quite convoluted.
@@ -65,6 +66,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
 
   const [state, setState] = useState({
     isPlaying: false,
+    fpsIdx: 0,
   });
 
   const [tick, setTick] = useState({
@@ -78,7 +80,13 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
 
   const animate = (time: number) => {
     if (previousTickRef.current !== undefined) {
-      // const deltaTime = time - previousTickRef.current;
+      const deltaTime = time - previousTickRef.current;
+
+      // Skip frame if call is too early
+      if (deltaTime < MIN_FRAME_TIMES[state.fpsIdx]) {
+        requestRef.current = requestAnimationFrame(animate);
+        return;
+      }
 
       setTick((prevTick) => {
         // Loop around to 0 if we're at the end of the arrays
@@ -103,6 +111,29 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
 
   const onPlayPauseClick = (): void => {
     setState({ ...state, isPlaying: !state.isPlaying });
+  };
+
+  const onSpeedIncreaseClick = (): void => {
+    setState((prevState) => {
+      const nextIdx = prevState.fpsIdx - 1 <= 0 ? 0 : prevState.fpsIdx - 1;
+      return {
+        ...prevState,
+        fpsIdx: nextIdx,
+      };
+    });
+  };
+
+  const onSpeedDecreaseClick = (): void => {
+    setState((prevState) => {
+      const nextIdx =
+        prevState.fpsIdx + 1 >= FRAME_RATES.length
+          ? FRAME_RATES.length - 1
+          : prevState.fpsIdx + 1;
+      return {
+        ...prevState,
+        fpsIdx: nextIdx,
+      };
+    });
   };
 
   const onStepForwardClicked = (): void => {
@@ -158,8 +189,15 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             {formatter.format(new Date(tick.timestamp))} GMT-08:00
           </div>
 
-          <button title="Slow Down">-</button>
-          <button title="Speed Up" style={{ marginRight: "1rem" }}>
+          <button title="Slow Down" onClick={onSpeedDecreaseClick}>
+            -
+          </button>
+          <div>{FRAME_RATES[state.fpsIdx]}</div>
+          <button
+            title="Speed Up"
+            style={{ marginRight: "1rem" }}
+            onClick={onSpeedIncreaseClick}
+          >
             +
           </button>
 
@@ -167,7 +205,13 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
           <button onClick={onPlayPauseClick}>
             {state.isPlaying ? "Pause" : "Play"}
           </button>
-          <button onClick={onStepForwardClicked}>{">"}</button>
+          <button
+            style={{ marginRight: "1rem" }}
+            onClick={onStepForwardClicked}
+          >
+            {">"}
+          </button>
+
           <button onClick={onResetClick}>Reset</button>
         </div>
       </Control>
