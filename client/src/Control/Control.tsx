@@ -1,7 +1,12 @@
-import React, { Children, ReactChild } from "react";
-import { render, unmountComponentAtNode } from "react-dom";
+import { ReactChild } from "react";
+import { createPortal } from "react-dom";
 
-import { MapControl, withLeaflet, MapControlProps } from "react-leaflet";
+import {
+  MapControl,
+  MapControlProps,
+  withLeaflet,
+  LeafletContext,
+} from "react-leaflet";
 import { Control as LeafletControl, DomUtil, DomEvent } from "leaflet";
 
 const DivControl = LeafletControl.extend({
@@ -19,36 +24,32 @@ type ControlProps = {
   children: ReactChild;
   position: string;
   className?: string;
-} & MapControlProps;
+} & MapControlProps &
+  LeafletContext;
 
 class Control extends MapControl {
-  constructor(props: ControlProps) {
-    super(props);
-  }
-
-  createLeafletElement({ position, className }: ControlProps) {
-    this.leafletElement = new DivControl({ position, className });
-    return this.leafletElement;
+  createLeafletElement(props: ControlProps) {
+    return new DivControl(props);
   }
 
   updateLeafletElement(fromProps: ControlProps, toProps: ControlProps) {
     super.updateLeafletElement(fromProps, toProps);
-    this.renderContent();
   }
 
   componentDidMount() {
+    // Appease the typescript god cuz componentDidMount "could be undefined"
+    if (super.componentDidMount === undefined) return null;
+
     super.componentDidMount();
-    this.renderContent();
+    this.forceUpdate();
   }
 
-  componentWillUnmount() {
-    unmountComponentAtNode(this.leafletElement.getContainer());
-    super.componentWillUnmount();
-  }
+  render() {
+    const container = this.leafletElement && this.leafletElement.getContainer();
 
-  renderContent() {
-    const container = this.leafletElement.getContainer();
-    render(Children.only(this.props.children), container);
+    return container !== undefined
+      ? createPortal(this.props.children, container)
+      : null;
   }
 }
 
