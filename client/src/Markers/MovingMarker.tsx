@@ -78,6 +78,11 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
   const requestRef = useRef<number>(0);
   const previousTickRef = useRef<number>(0);
 
+  // Ideas and code partially taken and/or modified from the following:
+  // https://css-tricks.com/using-requestanimationframe-with-react-hooks/
+  // http://www.javascriptkit.com/javatutors/requestanimationframe.shtml
+  // https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
+  // https://riptutorial.com/html5-canvas/example/18718/set-frame-rate-using-requestanimationframe
   const animate = (time: number) => {
     if (previousTickRef.current !== undefined) {
       const deltaTime = time - previousTickRef.current;
@@ -192,7 +197,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
           <button title="Slow Down" onClick={onSpeedDecreaseClick}>
             -
           </button>
-          <div>{FRAME_RATES[state.fpsIdx]}</div>
+          <div>{FRAME_RATES[state.fpsIdx]} FPS</div>
           <button
             title="Speed Up"
             style={{ marginRight: "1rem" }}
