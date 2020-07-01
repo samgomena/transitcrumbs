@@ -26,6 +26,38 @@ type Route = {
   route_short_name: string;
 };
 
+type Trip = {
+  trip_number: number;
+  service_date: Date;
+  train: number;
+};
+
+export const Breakdown = ({ state, dispatch }) => {
+  const { route, date } = state;
+
+  if (route === null) return null;
+
+  const { data, loading, error } = useQuery(AVL_CAD_TRIP_FROM_ROUTE, {
+    variables: {
+      route_number: route,
+    },
+  });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading trip: {JSON.stringify(error)}</div>;
+
+  return (
+    <div>
+      <div>Service Day</div>
+      <Dates state={state} dispatch={dispatch} />
+      <br />
+      <Vehicles state={state} dispatch={dispatch} />
+      <br />
+      <Trips state={state} dispatch={dispatch} />
+    </div>
+  );
+};
+
 export const Routes = ({ state, dispatch }): ReactElement => {
   const { data, loading, error } = useQuery(ROUTES);
 
@@ -35,7 +67,6 @@ export const Routes = ({ state, dispatch }): ReactElement => {
   return (
     <div>
       <div>Route</div>
-      {/* <select onChange={handleChange}> */}
       <select
         onChange={(e) =>
           dispatch({ type: appActionType.SET_ROUTE, payload: e.target.value })
@@ -55,89 +86,28 @@ export const Routes = ({ state, dispatch }): ReactElement => {
   );
 };
 
-type Trip = {
-  trip_number: number;
-  service_date: Date;
-  train: number;
-};
-
-export const Breakdown = (props) => {
-  const {
-    state,
-    dispatch,
-    route_number,
-    date,
-    setDate,
-    vehicle,
-    setVehicle,
-    trips,
-    setTrips,
-  } = props;
-
-  const { route } = state;
-
-  if (route === null) return null;
-
-  const { data, loading, error } = useQuery(AVL_CAD_TRIP_FROM_ROUTE, {
-    variables: {
-      route,
-    },
-  });
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading trip: {JSON.stringify(error)}</div>;
-
-  return (
-    <div>
-      <div>Service Day</div>
-      <Dates
-        state={state}
-        dispatch={dispatch}
-        route_number={route_number}
-        date={date}
-        setDate={setDate}
-      />
-      <br />
-      <Vehicles
-        state={state}
-        dispatch={dispatch}
-        route_number={route_number}
-        service_date={date}
-        vehicle={vehicle}
-        setVehicle={setVehicle}
-      />
-      <br />
-      <Trips
-        state={state}
-        dispatch={dispatch}
-        route_number={route_number}
-        service_date={date}
-        trips={trips}
-        setTrips={setTrips}
-      />
-    </div>
-  );
-};
-
-export const Dates = (props): ReactElement => {
-  const { state, dispatch } = props;
-  const { route, date } = state;
+export const Dates = ({ state, dispatch }): ReactElement => {
+  const { route: route_number, date } = state;
   const { data, loading, error } = useQuery(AVL_CAD_DATES, {
-    variables: { route },
+    variables: { route_number },
   });
+
+  const dates: Array<Date> = useMemo(
+    () =>
+      data &&
+      data.cad_avl_trips.map(
+        ({ service_date }: { service_date: string }) => new Date(service_date)
+      ),
+    [data && data.cad_avl_trips]
+  );
 
   if (loading) return <div>Loading dates...</div>;
   if (error) return <div>Error loading dates :(</div>;
-
-  const dates: Array<Date> = data.cad_avl_trips.map(
-    ({ service_date }: { service_date: Date }) => new Date(service_date)
-  );
 
   return (
     <DatePicker
       dateFormat="yyyy-MM-dd"
       selected={date}
-      // onChange={(date: Date) => setDate(date)}
       onChange={(date: Date) =>
         dispatch({ type: appActionType.SET_DATE, payload: date })
       }
@@ -155,8 +125,8 @@ export const Vehicles = ({ state, dispatch }) => {
     AVL_CAD_VEHICLES_FROM_ROUTE_AND_DATE,
     {
       variables: {
-        route,
-        date,
+        route_number: route,
+        service_date: date,
       },
     }
   );
@@ -167,7 +137,6 @@ export const Vehicles = ({ state, dispatch }) => {
   return (
     <div>
       <div>Vehicle ID</div>
-      {/* <select onChange={(e) => setVehicle(e.target.value)}> */}
       <select
         onChange={(e) =>
           dispatch({ type: appActionType.SET_VEHICLE, payload: e.target.value })
@@ -193,32 +162,27 @@ type TripDataType = {
   vehicle_number: number;
 };
 
-export const Trips = ({
-  state,
-  dispatch,
-  route_number,
-  service_date,
-  trips,
-  setTrips,
-}) => {
+type TripsByBlock = Record<number, Array<TripDataType>>;
+
+export const Trips = ({ state, dispatch }) => {
   const { route, date } = state;
   if (!route || !date) return null;
 
-  service_date = "2020-03-11";
-  route_number = 105;
+  // service_date = "2020-03-11";
+  // route_number = 105;
 
   const { data, loading, error } = useQuery(AVL_CAD_TRIPS_FROM_ROUTE_AND_DATE, {
     variables: {
-      route,
-      date,
+      route_number: route,
+      service_date: date,
     },
   });
 
-  const tripsByBlock = useMemo(
+  const tripsByBlock: TripsByBlock = useMemo(
     () =>
       data &&
       data.cad_avl_trips.reduce(
-        (acc, { block, trip_number, vehicle_number }: TripDataType) => {
+        (acc: any, { block, trip_number, vehicle_number }: TripDataType) => {
           if (acc[block] === undefined)
             acc[block] = [{ trip_number, vehicle_number }];
           else acc[block].push({ trip_number, vehicle_number });
@@ -247,7 +211,6 @@ export const Trips = ({
             padding: "4px",
             marginBottom: "4px",
           }}
-          // onClick={() => setTrips(values.map(({ trip_number }) => trip_number))}
           onClick={() =>
             dispatch({
               type: appActionType.SET_TRIPS,

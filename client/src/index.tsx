@@ -41,19 +41,18 @@ const initialState: appState = {
 };
 
 function reducer(state: appState, action: appActions) {
-  console.log(state, action);
   const { SET_ROUTE, SET_DATE, SET_VEHICLE, SET_TRIPS } = appActionType;
   switch (action.type) {
     case SET_ROUTE:
-      return { ...state, route: action.payload.route };
+      return { ...state, route: action.payload };
     case SET_DATE:
-      return { ...state, date: action.payload.date };
+      return { ...state, date: action.payload };
     case SET_VEHICLE:
-      return { ...state, vehicle: action.payload.vehicle };
+      return { ...state, vehicle: action.payload };
     case SET_TRIPS:
-      return { ...state, trips: action.payload.trips };
+      return { ...state, trips: action.payload };
     default:
-      throw new Error();
+      return state;
   }
 }
 
@@ -64,8 +63,8 @@ function App() {
   const [trips, setTrips] = useState<Array<number> | null>(null);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(`State:`, state);
 
-  console.log(`route: ${route}, date: ${date}, vehicle: ${vehicle}`);
   return (
     <ApolloProvider client={client}>
       <SplitPane split="vertical" primary="second">
@@ -78,17 +77,17 @@ function App() {
             }}
           >
             <h2>Search</h2>
-            <Routes state={state} dispatch={dispatch} setRoute={setRoute} />
+            <Routes state={state} dispatch={dispatch} />
             <Breakdown
               state={state}
               dispatch={dispatch}
-              route_number={route}
-              date={date}
-              setDate={setDate}
-              vehicle={vehicle}
-              setVehicle={setVehicle}
-              trips={trips}
-              setTrips={setTrips}
+              // route_number={route}
+              // date={date}
+              // setDate={setDate}
+              // vehicle={vehicle}
+              // setVehicle={setVehicle}
+              // trips={trips}
+              // setTrips={setTrips}
             />
           </div>
         </Pane>
