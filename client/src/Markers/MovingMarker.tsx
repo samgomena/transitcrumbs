@@ -37,7 +37,7 @@ const MIN_FRAME_TIMES = FRAME_RATES.map(
 );
 
 const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
-  // TODO: Not sure I feel about this; it's quite convoluted.
+  // TODO: Not sure how I feel about this; it's quite convoluted.
   // In _one_ pass remove null lat/lng values and dump lat/lngs and act_times into individual arrays
   // Memoize it via react so we only run on breadcrumb updates which *should* only be on initial render.
   const [positions, timestamps] = useMemo(
@@ -87,7 +87,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
     if (previousTickRef.current !== undefined) {
       const deltaTime = time - previousTickRef.current;
 
-      // Skip frame if call is too early
+      // Skip frame if call is "too early" for intended frame rate
       if (deltaTime < MIN_FRAME_TIMES[state.fpsIdx]) {
         requestRef.current = requestAnimationFrame(animate);
         return;
@@ -181,16 +181,12 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
       <Control position="bottomright">
         <div
           style={{
-            padding: "15px",
             backgroundColor: "whitesmoke",
-            display: "flex",
-            flexDirection: "row",
-            boxSizing: "border-box",
             width: "30rem",
-            borderRadius: "4px",
           }}
+          className="d-flex fd-row p-1 rounded"
         >
-          <div style={{ marginRight: "auto" }}>
+          <div className="mr-auto">
             {formatter.format(new Date(tick.timestamp))} GMT-08:00
           </div>
 
@@ -200,7 +196,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
           <div>{FRAME_RATES[state.fpsIdx]} FPS</div>
           <button
             title="Speed Up"
-            style={{ marginRight: "1rem" }}
+            className="mr-1"
             onClick={onSpeedIncreaseClick}
           >
             +
@@ -210,10 +206,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
           <button onClick={onPlayPauseClick}>
             {state.isPlaying ? "Pause" : "Play"}
           </button>
-          <button
-            style={{ marginRight: "1rem" }}
-            onClick={onStepForwardClicked}
-          >
+          <button className="mr-1" onClick={onStepForwardClicked}>
             {">"}
           </button>
 
