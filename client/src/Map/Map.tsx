@@ -47,13 +47,12 @@ const Map: FunctionComponent<MapProps> = ({
   center = [45.5925204, -122.6080728],
   zoom = 12,
   state,
-  date,
-  vehicle,
-  trips,
 }) => {
   const templateUrl =
     "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
   const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`;
+
+  let { date, trips, vehicle } = state;
 
   date = "2020-03-11";
   trips = [
@@ -78,7 +77,6 @@ const Map: FunctionComponent<MapProps> = ({
   // vehicle = 4028;
 
   const { data, loading, error } = useTripBreadcrumbs(date, trips);
-  console.log(error);
 
   return (
     <LeafletMap

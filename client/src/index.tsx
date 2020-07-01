@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useReducer } from "react";
 import { render } from "react-dom";
 import { ApolloProvider } from "@apollo/react-hooks";
 
@@ -57,11 +57,6 @@ function reducer(state: appState, action: appActions) {
 }
 
 function App() {
-  const [route, setRoute] = useState<number | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
-  const [vehicle, setVehicle] = useState<number | null>(null);
-  const [trips, setTrips] = useState<Array<number> | null>(null);
-
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log(`State:`, state);
 
@@ -78,21 +73,11 @@ function App() {
           >
             <h2>Search</h2>
             <Routes state={state} dispatch={dispatch} />
-            <Breakdown
-              state={state}
-              dispatch={dispatch}
-              // route_number={route}
-              // date={date}
-              // setDate={setDate}
-              // vehicle={vehicle}
-              // setVehicle={setVehicle}
-              // trips={trips}
-              // setTrips={setTrips}
-            />
+            <Breakdown state={state} dispatch={dispatch} />
           </div>
         </Pane>
         <Pane initialSize="80%" minSize="50%" maxSize="100%">
-          <Map state={state} date={date} vehicle={vehicle} trips={trips} />
+          <Map state={state} />
         </Pane>
       </SplitPane>
     </ApolloProvider>
