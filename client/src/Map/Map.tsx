@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Map as LeafletMap, TileLayer, Polyline } from "react-leaflet";
 
+import { appState } from "../index";
 import MovingMarker from "../Markers/MovingMarker";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
@@ -16,7 +17,8 @@ type LatLng = {
 type MapProps = {
   center?: [number, number];
   zoom?: number;
-  date?: string | null;
+  state: appState;
+  date?: Date | string | null;
   vehicle?: number | null;
   trips?: Array<number> | null;
 };
@@ -44,6 +46,7 @@ const colors = [
 const Map: FunctionComponent<MapProps> = ({
   center = [45.5925204, -122.6080728],
   zoom = 12,
+  state,
   date,
   vehicle,
   trips,
@@ -75,6 +78,8 @@ const Map: FunctionComponent<MapProps> = ({
   // vehicle = 4028;
 
   const { data, loading, error } = useTripBreadcrumbs(date, trips);
+  console.log(error);
+  console.log(state);
 
   return (
     <LeafletMap

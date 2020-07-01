@@ -2,6 +2,8 @@ import React, { ReactElement, useMemo } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import DatePicker from "react-datepicker";
 
+import { appActionType } from "../index";
+
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
@@ -24,21 +26,21 @@ type Route = {
   route_short_name: string;
 };
 
-export const Routes = ({ setRoute }: RouteProps): ReactElement => {
+export const Routes = ({ state, dispatch }): ReactElement => {
   const { data, loading, error } = useQuery(ROUTES);
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRoute(e.target.value);
-  };
+  if (loading) return <div>Loading routes...</div>;
+  if (error) return <div>There was an error loading routes :(</div>;
 
-  return loading ? (
-    <div>Routes loading...</div>
-  ) : error ? (
-    <div>There was an error loading routes</div>
-  ) : (
+  return (
     <div>
       <div>Route</div>
-      <select onChange={handleChange}>
+      {/* <select onChange={handleChange}> */}
+      <select
+        onChange={(e) =>
+          dispatch({ type: appActionType.SET_ROUTE, payload: e.target.value })
+        }
+      >
         {/* Null option */}
         <option></option>
         {data.gtfs_routes.map(
@@ -53,10 +55,75 @@ export const Routes = ({ setRoute }: RouteProps): ReactElement => {
   );
 };
 
+type Trip = {
+  trip_number: number;
+  service_date: Date;
+  train: number;
+};
+
+export const Breakdown = (props) => {
+  const {
+    state,
+    dispatch,
+    route_number,
+    date,
+    setDate,
+    vehicle,
+    setVehicle,
+    trips,
+    setTrips,
+  } = props;
+
+  const { route } = state;
+
+  if (route === null) return null;
+
+  const { data, loading, error } = useQuery(AVL_CAD_TRIP_FROM_ROUTE, {
+    variables: {
+      route,
+    },
+  });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading trip: {JSON.stringify(error)}</div>;
+
+  return (
+    <div>
+      <div>Service Day</div>
+      <Dates
+        state={state}
+        dispatch={dispatch}
+        route_number={route_number}
+        date={date}
+        setDate={setDate}
+      />
+      <br />
+      <Vehicles
+        state={state}
+        dispatch={dispatch}
+        route_number={route_number}
+        service_date={date}
+        vehicle={vehicle}
+        setVehicle={setVehicle}
+      />
+      <br />
+      <Trips
+        state={state}
+        dispatch={dispatch}
+        route_number={route_number}
+        service_date={date}
+        trips={trips}
+        setTrips={setTrips}
+      />
+    </div>
+  );
+};
+
 export const Dates = (props): ReactElement => {
-  const { route_number, date, setDate } = props;
+  const { state, dispatch } = props;
+  const { route, date } = state;
   const { data, loading, error } = useQuery(AVL_CAD_DATES, {
-    variables: { route_number },
+    variables: { route },
   });
 
   if (loading) return <div>Loading dates...</div>;
@@ -70,73 +137,26 @@ export const Dates = (props): ReactElement => {
     <DatePicker
       dateFormat="yyyy-MM-dd"
       selected={date}
-      onChange={(date: Date) => setDate(date)}
+      // onChange={(date: Date) => setDate(date)}
+      onChange={(date: Date) =>
+        dispatch({ type: appActionType.SET_DATE, payload: date })
+      }
       includeDates={dates}
       placeholderText="Select a service date"
     />
   );
 };
 
-type Trip = {
-  trip_number: number;
-  service_date: Date;
-  train: number;
-};
-
-export const Breakdown = (props) => {
-  const {
-    route_number,
-    date,
-    setDate,
-    vehicle,
-    setVehicle,
-    trips,
-    setTrips,
-  } = props;
-
-  if (route_number === null) return null;
-
-  const { data, loading, error } = useQuery(AVL_CAD_TRIP_FROM_ROUTE, {
-    variables: {
-      route_number,
-    },
-  });
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading trip: {JSON.stringify(error)}</div>;
-
-  return (
-    <div>
-      <div>Service Day</div>
-      <Dates route_number={route_number} date={date} setDate={setDate} />
-      <br />
-      <Vehicles
-        route_number={route_number}
-        service_date={date}
-        vehicle={vehicle}
-        setVehicle={setVehicle}
-      />
-      <br />
-      <Trips
-        route_number={route_number}
-        service_date={date}
-        trips={trips}
-        setTrips={setTrips}
-      />
-    </div>
-  );
-};
-
-export const Vehicles = (props) => {
-  const { route_number, service_date, vehicle, setVehicle } = props;
-  if (!route_number || !service_date) return null;
+export const Vehicles = ({ state, dispatch }) => {
+  const { route, date } = state;
+  if (!route || !date) return null;
 
   const { data, loading, error } = useQuery(
     AVL_CAD_VEHICLES_FROM_ROUTE_AND_DATE,
     {
       variables: {
-        route_number,
-        service_date,
+        route,
+        date,
       },
     }
   );
@@ -147,7 +167,12 @@ export const Vehicles = (props) => {
   return (
     <div>
       <div>Vehicle ID</div>
-      <select onChange={(e) => setVehicle(e.target.value)}>
+      {/* <select onChange={(e) => setVehicle(e.target.value)}> */}
+      <select
+        onChange={(e) =>
+          dispatch({ type: appActionType.SET_VEHICLE, payload: e.target.value })
+        }
+      >
         <option></option>
         {data.cad_avl_trips.map(
           ({ vehicle_number }: { vehicle_number: number }, idx: number) => (
@@ -168,15 +193,24 @@ type TripDataType = {
   vehicle_number: number;
 };
 
-export const Trips = ({ route_number, service_date, trips, setTrips }) => {
-  if (!route_number || !service_date) return null;
+export const Trips = ({
+  state,
+  dispatch,
+  route_number,
+  service_date,
+  trips,
+  setTrips,
+}) => {
+  const { route, date } = state;
+  if (!route || !date) return null;
+
   service_date = "2020-03-11";
   route_number = 105;
 
   const { data, loading, error } = useQuery(AVL_CAD_TRIPS_FROM_ROUTE_AND_DATE, {
     variables: {
-      route_number,
-      service_date,
+      route,
+      date,
     },
   });
 
@@ -198,8 +232,6 @@ export const Trips = ({ route_number, service_date, trips, setTrips }) => {
   if (loading) return <div>Loading trips...</div>;
   if (error) return <div>Error loading trip information</div>;
 
-  console.log(trips);
-
   return (
     <div
       style={{
@@ -215,7 +247,13 @@ export const Trips = ({ route_number, service_date, trips, setTrips }) => {
             padding: "4px",
             marginBottom: "4px",
           }}
-          onClick={() => setTrips(values.map(({ trip_number }) => trip_number))}
+          // onClick={() => setTrips(values.map(({ trip_number }) => trip_number))}
+          onClick={() =>
+            dispatch({
+              type: appActionType.SET_TRIPS,
+              payload: values.map(({ trip_number }) => trip_number),
+            })
+          }
         >
           <div style={{ fontSize: "1.2" }}>Block: {block}</div>
           {values.map(({ trip_number, vehicle_number }, idx) => (
