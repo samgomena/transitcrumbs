@@ -7,6 +7,7 @@
 !client/
 !client/src/
 !client/src/**/
+!client/src/**/*.ts
 !client/src/**/*.tsx
 !client/src/*.ts
 !client/src/*.tsx
