@@ -27,9 +27,6 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   second: "numeric",
 });
 
-const genericFps = 1000 / 60;
-const playbackFps = [genericFps / 2, genericFps];
-
 const DEFAULT_FRAME_RATE = 1000 / 60;
 const FRAME_RATES = [60, 30, 20, 15, 10, 5, 2, 1];
 const MIN_FRAME_TIMES = FRAME_RATES.map(

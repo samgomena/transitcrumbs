@@ -79,7 +79,6 @@ const Map: FunctionComponent<MapProps> = ({
 
   const { data, loading, error } = useTripBreadcrumbs(date, trips);
   console.log(error);
-  console.log(state);
 
   return (
     <LeafletMap
