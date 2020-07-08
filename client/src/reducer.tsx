@@ -64,4 +64,4 @@ const StateProvider = ({ children }: { children: ReactChild }) => {
 };
 
 export default StateProvider;
-export const useState = () => useContext(StateContext);
+export const useAppState = () => useContext(StateContext);
