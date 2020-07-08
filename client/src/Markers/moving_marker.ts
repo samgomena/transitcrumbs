@@ -9,7 +9,7 @@ import * as L from "leaflet";
 
 // Manually define marker icon b/c parcel doesn't know how to replace the url properly in the bundle
 // See: https://stackoverflow.com/a/57093376/4668680
-const markerIcon = L.icon({
+export const markerIcon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [10, 41],
   popupAnchor: [2, -40],
@@ -30,7 +30,7 @@ interface MovingMarkerOptions extends L.MarkerOptions {
   loop?: boolean;
 }
 
-export default class MovingMarker extends L.Marker {
+export default class _MovingMarker extends L.Marker {
   private _latlngs: L.LatLng[];
   private _durations: number[];
   private _options: MovingMarkerOptions = { autostart: false, loop: false };
@@ -73,8 +73,6 @@ export default class MovingMarker extends L.Marker {
     const lastIndex = this._latlngs.length - 1;
     const distances = [];
     let totalDistance = 0;
-
-    this._latlngs;
 
     for (let i = 0; i < lastIndex; i++) {
       const distance = this._latlngs[i + 1].distanceTo(this._latlngs[i]);
@@ -128,7 +126,13 @@ export default class MovingMarker extends L.Marker {
     this._updatePosition();
   }
 
-  stop(elapsedTime: number) {
+  step() {
+    if (!this.isRunning()) {
+      return;
+    }
+  }
+
+  stop(elapsedTime?: number) {
     if (this.isEnded()) {
       return;
     }
@@ -143,6 +147,15 @@ export default class MovingMarker extends L.Marker {
 
     this._state = State.ENDED;
     this.fire("end", { elapsedTime });
+  }
+
+  reset() {
+    if (this.isEnded()) {
+      return;
+    }
+
+    this._stopAnimation();
+    this.setLatLng(this._latlngs[0]);
   }
 
   _startAnimation(): void {
@@ -274,9 +287,3 @@ export default class MovingMarker extends L.Marker {
     }
   }
 }
-
-L.movingMarker = (
-  latLngs: L.LatLngTuple[],
-  durations: number[],
-  options: MovingMarkerOptions
-) => new MovingMarker(latLngs, durations, options);
