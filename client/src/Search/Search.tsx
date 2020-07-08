@@ -2,23 +2,19 @@ import React, { ReactElement, useMemo } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import DatePicker from "react-datepicker";
 
-import { appActionType } from "../index";
+import SearchResults from "./SearchResults";
+import { useAppState, Actions } from "../reducer";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
   ROUTES,
-  AVL_CAD_TRIP_FROM_ROUTE,
   AVL_CAD_TRIPS_FROM_ROUTE_AND_DATE,
   AVL_CAD_VEHICLES_FROM_ROUTE_AND_DATE,
   GET_BREADCRUMBS_FROM_VEHICLE_AND_DATE,
   GET_BREADCRUMBS_FROM_DATE_AND_TRIPS,
   AVL_CAD_DATES,
 } from "../queries";
-
-type RouteProps = {
-  setRoute: Function;
-};
 
 type Route = {
   route_id: number;
@@ -32,33 +28,8 @@ type Trip = {
   train: number;
 };
 
-export const Breakdown = ({ state, dispatch }) => {
-  const { route, date } = state;
-
-  if (route === null) return null;
-
-  const { data, loading, error } = useQuery(AVL_CAD_TRIP_FROM_ROUTE, {
-    variables: {
-      route_number: route,
-    },
-  });
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading trip: {JSON.stringify(error)}</div>;
-
-  return (
-    <div>
-      <div>Service Day</div>
-      <Dates state={state} dispatch={dispatch} />
-      <br />
-      <Vehicles state={state} dispatch={dispatch} />
-      <br />
-      <Trips state={state} dispatch={dispatch} />
-    </div>
-  );
-};
-
-export const Routes = ({ state, dispatch }): ReactElement => {
+export const Routes = (props: any): ReactElement => {
+  const [state, dispatch] = useAppState();
   const { data, loading, error } = useQuery(ROUTES);
 
   if (loading) return <div>Loading routes...</div>;
@@ -69,7 +40,7 @@ export const Routes = ({ state, dispatch }): ReactElement => {
       <div>Route</div>
       <select
         onChange={(e) =>
-          dispatch({ type: appActionType.SET_ROUTE, payload: e.target.value })
+          dispatch({ type: Actions.SET_ROUTE, payload: e.target.value })
         }
       >
         {/* Null option */}
@@ -86,8 +57,10 @@ export const Routes = ({ state, dispatch }): ReactElement => {
   );
 };
 
-export const Dates = ({ state, dispatch }): ReactElement => {
+export const Dates = (props: any): ReactElement => {
+  const [state, dispatch] = useAppState();
   const { route: route_number, date } = state;
+
   const { data, loading, error } = useQuery(AVL_CAD_DATES, {
     variables: { route_number },
   });
@@ -107,9 +80,9 @@ export const Dates = ({ state, dispatch }): ReactElement => {
   return (
     <DatePicker
       dateFormat="yyyy-MM-dd"
-      selected={date}
+      selected={date ? new Date(date) : undefined}
       onChange={(date: Date) =>
-        dispatch({ type: appActionType.SET_DATE, payload: date })
+        dispatch({ type: Actions.SET_DATE, payload: date })
       }
       includeDates={dates}
       placeholderText="Select a service date"
@@ -117,7 +90,8 @@ export const Dates = ({ state, dispatch }): ReactElement => {
   );
 };
 
-export const Vehicles = ({ state, dispatch }) => {
+export const Vehicles = (props: any) => {
+  const [state, dispatch] = useAppState();
   const { route, date } = state;
   if (!route || !date) return null;
 
@@ -139,7 +113,7 @@ export const Vehicles = ({ state, dispatch }) => {
       <div>Vehicle ID</div>
       <select
         onChange={(e) =>
-          dispatch({ type: appActionType.SET_VEHICLE, payload: e.target.value })
+          dispatch({ type: Actions.SET_VEHICLE, payload: e.target.value })
         }
       >
         <option></option>
@@ -162,14 +136,15 @@ type TripDataType = {
   vehicle_number: number;
 };
 
-type TripsByBlock = Record<number, Array<TripDataType>>;
+export type TripsByBlock = Record<number, Array<TripDataType>>;
 
-export const Trips = ({ state, dispatch }) => {
-  const { route, date } = state;
+export const Trips = (props: any) => {
+  const [state, dispatch] = useAppState();
+  let { route, date } = state;
+  date = "2020-03-11";
+  route = 105;
+
   if (!route || !date) return null;
-
-  // service_date = "2020-03-11";
-  // route_number = 105;
 
   const { data, loading, error } = useQuery(AVL_CAD_TRIPS_FROM_ROUTE_AND_DATE, {
     variables: {
@@ -203,30 +178,7 @@ export const Trips = ({ state, dispatch }) => {
         overflow: "scroll",
       }}
     >
-      {Object.entries(tripsByBlock).map(([block, values]) => (
-        <div
-          style={{
-            border: "1px gray solid",
-            borderRadius: "4px",
-            padding: "4px",
-            marginBottom: "4px",
-          }}
-          onClick={() =>
-            dispatch({
-              type: appActionType.SET_TRIPS,
-              payload: values.map(({ trip_number }) => trip_number),
-            })
-          }
-        >
-          <div style={{ fontSize: "1.2" }}>Block: {block}</div>
-          {values.map(({ trip_number, vehicle_number }, idx) => (
-            <div key={idx}>
-              <input type="checkbox" />
-              {trip_number} {vehicle_number}
-            </div>
-          ))}
-        </div>
-      ))}
+      <SearchResults tripsByBlock={tripsByBlock} />
     </div>
   );
 };
