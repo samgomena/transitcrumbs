@@ -1,13 +1,11 @@
 import React, {
   createContext,
-  Dispatch,
   ReactChild,
-  Reducer,
   useContext,
   useReducer,
 } from "react";
 
-export interface AppState {
+export interface State {
   route: number | null;
   date: Date | string | null;
   vehicle: number | null;
@@ -21,21 +19,19 @@ export enum Actions {
   SET_TRIPS,
 }
 
-type Payload = any;
-
 interface Action {
   type: Actions;
-  payload: Payload;
+  payload: any;
 }
 
-const initialState: AppState = {
+const initialState: State = {
   route: null,
   date: null,
   vehicle: null,
   trips: [],
 };
 
-function reducer(state: AppState, action: Action): AppState {
+function reducer(state: State, action: Action): State {
   const { SET_ROUTE, SET_DATE, SET_VEHICLE, SET_TRIPS } = Actions;
 
   switch (action.type) {
@@ -52,17 +48,13 @@ function reducer(state: AppState, action: Action): AppState {
   }
 }
 
-// const StateContext = createContext<[AppState, Reducer<AppState, Action>]>([
-// [AppState, React.Dispatch<Action>]
-const StateContext = createContext<[AppState, React.Dispatch<Action>]>([
+const StateContext = createContext<[State, React.Dispatch<Action>]>([
   initialState,
   // Appease the ts gods
   () => {},
 ]);
 
 const StateProvider = ({ children }: { children: ReactChild }) => {
-  // const contextValue: [AppState, Dispatch<Action>] = useReducer(
-  // const contextValue: Reducer<AppState, Action> = useReducer(
   const contextValue = useReducer(reducer, initialState);
   return (
     <StateContext.Provider value={contextValue}>
@@ -72,4 +64,4 @@ const StateProvider = ({ children }: { children: ReactChild }) => {
 };
 
 export default StateProvider;
-export const useAppState = () => useContext(StateContext);
+export const useState = () => useContext(StateContext);
