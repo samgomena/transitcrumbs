@@ -187,27 +187,48 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             {formatter.format(new Date(tick.timestamp))} GMT-08:00
           </div>
 
-          <button title="Slow Down" onClick={onSpeedDecreaseClick}>
-            -
-          </button>
-          <div>{FRAME_RATES[state.fpsIdx]} FPS</div>
-          <button
-            title="Speed Up"
-            className="mr-1"
-            onClick={onSpeedIncreaseClick}
-          >
-            +
-          </button>
+          <div className="btn-group btn-group-sm" role="group">
+            <button
+              title="Slow Down"
+              className="btn btn-sm btn-secondary"
+              onClick={onSpeedDecreaseClick}
+            >
+              -
+            </button>
+            <div>{FRAME_RATES[state.fpsIdx]} FPS</div>
+            <button
+              title="Speed Up"
+              className="btn btn-sm btn-secondary mr-1"
+              onClick={onSpeedIncreaseClick}
+            >
+              +
+            </button>
+          </div>
 
-          <button onClick={onStepBackwardClicked}>{"<"}</button>
-          <button onClick={onPlayPauseClick}>
-            {state.isPlaying ? "Pause" : "Play"}
-          </button>
-          <button className="mr-1" onClick={onStepForwardClicked}>
-            {">"}
-          </button>
+          <div className="btn-group btn-group-sm" role="group">
+            <button
+              className="btn btn-sm btn-secondary"
+              onClick={onStepBackwardClicked}
+            >
+              {"<"}
+            </button>
+            <button
+              className="btn btn-sm btn-secondary"
+              onClick={onPlayPauseClick}
+            >
+              {state.isPlaying ? "Pause" : "Play"}
+            </button>
+            <button
+              className="btn btn-sm btn-secondary mr-1"
+              onClick={onStepForwardClicked}
+            >
+              {">"}
+            </button>
+          </div>
 
-          <button onClick={onResetClick}>Reset</button>
+          <button className="btn btn-sm btn-secondary" onClick={onResetClick}>
+            Reset
+          </button>
         </div>
       </Control>
       <Marker position={tick.position} icon={markerIcon} />
