@@ -26,7 +26,12 @@ export default function SearchResults({
               onChange={() =>
                 dispatch({
                   type: Actions.SET_TRIPS,
-                  payload: values.map(({ trip_number }) => trip_number),
+                  payload:
+                    trips.length === 0
+                      ? values.map(({ trip_number }) => trip_number)
+                      : values.length < trips.length
+                      ? values.map(({ trip_number }) => trip_number)
+                      : [],
                 })
               }
             />

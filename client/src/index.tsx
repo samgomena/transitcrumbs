@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import { ApolloProvider } from "@apollo/react-hooks";
 
 import SplitPane from "react-split-pane";
+// @ts-ignore: waiting for @next to expose typings
 import Pane from "react-split-pane/lib/Pane";
 
 import { client } from "./api";
@@ -22,10 +23,9 @@ function App() {
           <Pane initialSize="20%" minSize="10%">
             <div
               style={{
-                display: "flex",
                 margin: "0.75rem",
-                flexDirection: "column",
               }}
+              className="d-flex flex-column h-100 pb-3"
             >
               <h2>Search</h2>
               <Routes />

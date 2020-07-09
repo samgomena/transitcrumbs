@@ -37,14 +37,15 @@ export const Routes = (props: any): ReactElement => {
 
   return (
     <div>
-      <div>Route</div>
+      {/* <div>Route</div> */}
       <select
+        className="form-control mb-2"
         onChange={(e) =>
           dispatch({ type: Actions.SET_ROUTE, payload: e.target.value })
         }
       >
         {/* Null option */}
-        <option></option>
+        <option value="">Select a route</option>
         {data.gtfs_routes.map(
           ({ route_long_name, route_short_name }: Route, idx: number) => (
             <option key={`route-${idx}`} value={route_short_name}>
@@ -79,6 +80,7 @@ export const Dates = (props: any): ReactElement => {
 
   return (
     <DatePicker
+      className="form-control mb-2"
       dateFormat="yyyy-MM-dd"
       selected={date ? new Date(date) : undefined}
       onChange={(date: Date) =>
@@ -112,6 +114,7 @@ export const Vehicles = (props: any) => {
     <div>
       <div>Vehicle ID</div>
       <select
+        className="form-control mb-2"
         onChange={(e) =>
           dispatch({ type: Actions.SET_VEHICLE, payload: e.target.value })
         }
@@ -174,7 +177,6 @@ export const Trips = (props: any) => {
   return (
     <div
       style={{
-        height: "40rem",
         overflow: "scroll",
       }}
     >
@@ -188,7 +190,10 @@ export const useBreadcrumbs = (opd_date: string, vehicle_id: number) =>
     variables: { opd_date, vehicle_id },
   });
 
-export const useTripBreadcrumbs = (opd_date: string, trips: Array<number>) =>
+export const useTripBreadcrumbs = (
+  opd_date: string | Date | null,
+  trips: Array<number>
+) =>
   useQuery(GET_BREADCRUMBS_FROM_DATE_AND_TRIPS, {
     variables: { opd_date, _in: trips },
   });
