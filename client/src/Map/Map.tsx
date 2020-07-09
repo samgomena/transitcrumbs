@@ -5,6 +5,8 @@ import { useAppState } from "../reducer";
 import MovingMarker from "../Markers/MovingMarker";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
+import { generateColor } from "../utils";
+
 import "leaflet/dist/leaflet.css";
 
 const CTRAN_GARAGE = [45.638574, -122.603547];
@@ -29,18 +31,7 @@ type Breadcrumb = {
   event_no_trip: number;
 };
 
-const colors = [
-  "#2d81c4",
-  "#e7590d",
-  "#32e213",
-  "#ed0815",
-  "#a3228f",
-  "#9eb217",
-  "#845ec2",
-  "#4ffbdf",
-  "#00c2a8",
-  "#008b74",
-];
+const colors: Array<string> = [];
 
 const Map: FunctionComponent<MapProps> = ({
   center = [45.5925204, -122.6080728],
@@ -48,34 +39,16 @@ const Map: FunctionComponent<MapProps> = ({
 }) => {
   const templateUrl =
     "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+
+  // const templateUrl = `http://{switch:a,b,c}.tiles.mapbox.com/v3/openstreetmap.map-4wvf9l0l/${zoom}/{x}/{y}.png`;
+  // const templateUrl = `http://{switch:a,b,c}.tile.openstreetmap.us/usgs_large_scale/15/{x}/{y}.jpg`;
   const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`;
 
   const [state, _] = useAppState();
   let { date, trips, vehicle } = state;
 
-  // date = "2020-03-11";
-  // trips = [
-  //   153300419,
-  //   153300424,
-  //   153300431,
-  //   153300453,
-  //   153300464,
-  //   153300484,
-  //   153300495,
-  //   153300512,
-  //   153300524,
-  //   153300539,
-  //   153300552,
-  //   153300570,
-  //   153300585,
-  //   153300602,
-  //   153300629,
-  //   153300641,
-  //   153300665,
-  // ];
-  // vehicle = 4028;
-
   const { data, loading, error } = useTripBreadcrumbs(date, trips);
+  data && data.unique_trips.forEach(() => colors.push(generateColor()));
 
   return (
     <LeafletMap
