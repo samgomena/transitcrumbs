@@ -3,22 +3,27 @@ import {
   LayersControl,
   Map as LeafletMap,
   Polyline,
+  Marker,
+  Popup,
+  LayerGroup,
+  FeatureGroup,
+  Circle,
   TileLayer,
 } from "react-leaflet";
 
 import { useAppState } from "../reducer";
 import MovingMarker from "../Markers/MovingMarker";
 import Hotline from "../Polylines/Hotline";
+import Control from "../Control/Control";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
 import { generateColor } from "../utils";
 
 import "leaflet/dist/leaflet.css";
 import Loading from "../components/Loading";
+import { LatLngTuple } from "leaflet";
 
-console.log(generateColor());
-
-const CTRAN_GARAGE = [45.638574, -122.603547];
+const CTRAN_GARAGE: LatLngTuple = [45.638574, -122.603547];
 
 type LatLng = {
   lat: number;
@@ -42,16 +47,15 @@ export type Breadcrumb = {
 
 const colors: Array<string> = [];
 
+const accessToken = `pk.eyJ1Ijoic2FtZ29tZW5hIiwiYSI6ImNrY29heTNydDBoczkyem8yb2xuMHJpN24ifQ.vCpvxiLC8GhG-k3EVkyvag`;
+
 const Map: FunctionComponent<MapProps> = ({
   center = [45.5925204, -122.6080728],
   zoom = 12,
 }) => {
-  const templateUrl =
-    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-
   // const templateUrl = `http://{switch:a,b,c}.tiles.mapbox.com/v3/openstreetmap.map-4wvf9l0l/${zoom}/{x}/{y}.png`;
   // const templateUrl = `http://{switch:a,b,c}.tile.openstreetmap.us/usgs_large_scale/15/{x}/{y}.jpg`;
-  const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`;
+  const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a>`;
 
   const [state, _] = useAppState();
   let { date, trips, vehicle } = state;
@@ -61,8 +65,84 @@ const Map: FunctionComponent<MapProps> = ({
 
   return (
     <LeafletMap className="h-100 w-100" center={center} zoom={zoom}>
-      <TileLayer url={templateUrl} attribution={attribution} />
+      <LayersControl position="topright">
+        <LayersControl.BaseLayer checked name="Default">
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution={attribution}
+          />
+        </LayersControl.BaseLayer>
+        <LayersControl.BaseLayer name="Satellite">
+          <TileLayer
+            attribution={attribution}
+            url={`https://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=${accessToken}`}
+          />
+        </LayersControl.BaseLayer>
+
+        <LayersControl.Overlay checked name="Colored Trip">
+          <FeatureGroup checked>
+            {!loading && data && data.breadcrumbs.length > 0 && (
+              <>
+                {/* <MovingMarker date={date} breadcrumbs={data.breadcrumbs} /> */}
+                {data.unique_trips.map(
+                  (
+                    { event_no_trip: unique_trip }: { event_no_trip: number },
+                    idx: number
+                  ) => (
+                    <Polyline
+                      key={idx}
+                      positions={data.breadcrumbs.filter(
+                        ({ lat, lon, event_no_trip }: Breadcrumb) =>
+                          unique_trip === event_no_trip &&
+                          lat !== null &&
+                          lon !== null
+                      )}
+                      color={colors[idx]}
+                    />
+                  )
+                )}
+              </>
+            )}
+          </FeatureGroup>
+        </LayersControl.Overlay>
+
+        <LayersControl.Overlay name="Velocity Heatmap polyline">
+          <FeatureGroup checked>
+            {!loading && data && data.breadcrumbs.length > 0 && (
+              <>
+                {/* <MovingMarker date={date} breadcrumbs={data.breadcrumbs} /> */}
+                {data.unique_trips.map(
+                  (
+                    { event_no_trip: unique_trip }: { event_no_trip: number },
+                    idx: number
+                  ) => (
+                    <Hotline
+                      positions={data.breadcrumbs.filter(
+                        ({ lat, lon, event_no_trip }: Breadcrumb) =>
+                          unique_trip === event_no_trip &&
+                          lat !== null &&
+                          lon !== null
+                      )}
+                    />
+                  )
+                )}
+              </>
+            )}
+          </FeatureGroup>
+        </LayersControl.Overlay>
+
+        <LayersControl.Overlay name="Show C-Tran Garage">
+          <FeatureGroup>
+            <Circle center={CTRAN_GARAGE} radius={100} />
+          </FeatureGroup>
+        </LayersControl.Overlay>
+      </LayersControl>
+
       {!loading && data && data.breadcrumbs.length > 0 && (
+        <MovingMarker date={date} breadcrumbs={data.breadcrumbs} />
+      )}
+
+      {/* {!loading && data && data.breadcrumbs.length > 0 && (
         <>
           <MovingMarker date={date} breadcrumbs={data.breadcrumbs} />
           {data.unique_trips.map(
@@ -71,7 +151,7 @@ const Map: FunctionComponent<MapProps> = ({
               idx: number
             ) => (
               <>
-                {/* <Polyline
+                <Polyline
                   key={idx}
                   positions={data.breadcrumbs.filter(
                     ({ lat, lon, event_no_trip }: Breadcrumb) =>
@@ -80,7 +160,7 @@ const Map: FunctionComponent<MapProps> = ({
                       lon !== null
                   )}
                   color={colors[idx]}
-                /> */}
+                />
                 <Hotline
                   positions={data.breadcrumbs.filter(
                     ({ lat, lon, event_no_trip }: Breadcrumb) =>
@@ -93,7 +173,7 @@ const Map: FunctionComponent<MapProps> = ({
             )
           )}
         </>
-      )}
+      )} */}
     </LeafletMap>
   );
 };
