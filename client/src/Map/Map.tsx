@@ -1,13 +1,22 @@
 import React, { FunctionComponent } from "react";
-import { Map as LeafletMap, TileLayer, Polyline } from "react-leaflet";
+import {
+  LayersControl,
+  Map as LeafletMap,
+  Polyline,
+  TileLayer,
+} from "react-leaflet";
 
 import { useAppState } from "../reducer";
 import MovingMarker from "../Markers/MovingMarker";
+import Hotline from "../Polylines/Hotline";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
 import { generateColor } from "../utils";
 
 import "leaflet/dist/leaflet.css";
+import Loading from "../components/Loading";
+
+console.log(generateColor());
 
 const CTRAN_GARAGE = [45.638574, -122.603547];
 
@@ -24,7 +33,7 @@ type MapProps = {
   trips?: Array<number> | null;
 };
 
-type Breadcrumb = {
+export type Breadcrumb = {
   lat: number;
   lon: number;
   act_time: number;
@@ -51,11 +60,7 @@ const Map: FunctionComponent<MapProps> = ({
   data && data.unique_trips.forEach(() => colors.push(generateColor()));
 
   return (
-    <LeafletMap
-      center={center}
-      zoom={zoom}
-      style={{ height: "100%", width: "100%" }}
-    >
+    <LeafletMap className="h-100 w-100" center={center} zoom={zoom}>
       <TileLayer url={templateUrl} attribution={attribution} />
       {!loading && data && data.breadcrumbs.length > 0 && (
         <>
@@ -65,16 +70,26 @@ const Map: FunctionComponent<MapProps> = ({
               { event_no_trip: unique_trip }: { event_no_trip: number },
               idx: number
             ) => (
-              <Polyline
-                key={idx}
-                positions={data.breadcrumbs.filter(
-                  ({ lat, lon, event_no_trip }: Breadcrumb) =>
-                    unique_trip === event_no_trip &&
-                    lat !== null &&
-                    lon !== null
-                )}
-                color={colors[idx]}
-              />
+              <>
+                {/* <Polyline
+                  key={idx}
+                  positions={data.breadcrumbs.filter(
+                    ({ lat, lon, event_no_trip }: Breadcrumb) =>
+                      unique_trip === event_no_trip &&
+                      lat !== null &&
+                      lon !== null
+                  )}
+                  color={colors[idx]}
+                /> */}
+                <Hotline
+                  breadcrumbs={data.breadcrumbs.filter(
+                    ({ lat, lon, event_no_trip }: Breadcrumb) =>
+                      unique_trip === event_no_trip &&
+                      lat !== null &&
+                      lon !== null
+                  )}
+                />
+              </>
             )
           )}
         </>
