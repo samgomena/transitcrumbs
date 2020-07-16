@@ -56,11 +56,15 @@ const Map: FunctionComponent<MapProps> = ({
     <LeafletMap
       center={center}
       zoom={zoom}
-      style={{ height: "100%", width: "100%" }}
+      style={{
+        height: "100%",
+        width: "100%",
+        opacity: state.loading ? 0.5 : 1,
+      }}
     >
       <TileLayer url={templateUrl} attribution={attribution} />
       <Control position="topleft">
-        <Loading style={{ width: "26px", height: "26px" }} loading={true} />
+        {state.loading && <Loading style={{ width: "26px", height: "26px" }} />}
       </Control>
       {!loading && data && data.breadcrumbs.length > 0 && (
         <>

@@ -1,11 +1,13 @@
 import React, {
   createContext,
+  Dispatch,
   ReactChild,
   useContext,
   useReducer,
 } from "react";
 
 export interface State {
+  loading: boolean;
   route: number | null;
   date: Date | string | null;
   vehicle: number | null;
@@ -13,6 +15,7 @@ export interface State {
 }
 
 export enum Actions {
+  LOADING,
   SET_ROUTE,
   SET_DATE,
   SET_VEHICLE,
@@ -25,6 +28,7 @@ interface Action {
 }
 
 const initialState: State = {
+  loading: false,
   route: null,
   date: null,
   vehicle: null,
@@ -32,9 +36,11 @@ const initialState: State = {
 };
 
 function reducer(state: State, action: Action): State {
-  const { SET_ROUTE, SET_DATE, SET_VEHICLE, SET_TRIPS } = Actions;
+  const { LOADING, SET_ROUTE, SET_DATE, SET_VEHICLE, SET_TRIPS } = Actions;
 
   switch (action.type) {
+    case LOADING:
+      return { ...state, loading: action.payload };
     case SET_ROUTE:
       return { ...state, route: action.payload };
     case SET_DATE:
@@ -48,7 +54,7 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-const StateContext = createContext<[State, React.Dispatch<Action>]>([
+const StateContext = createContext<[State, Dispatch<Action>]>([
   initialState,
   // Appease the ts gods
   () => {},

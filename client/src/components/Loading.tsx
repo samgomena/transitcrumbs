@@ -1,18 +1,8 @@
-import React, { ReactChildren } from "react";
+import React from "react";
 
-export default function Loading({
-  loading,
-  ...rest
-}: {
-  loading: boolean;
-  rest: any;
-}) {
+export default function Loading(props: any) {
   return (
-    <div
-      className={loading ? "spinner-border text-dark" : ""}
-      {...rest}
-      role="status"
-    >
+    <div {...props} className="spinner-border text-dark" role="status">
       <span className="sr-only">Loading...</span>
     </div>
   );
