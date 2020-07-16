@@ -179,11 +179,10 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
         <div
           style={{
             backgroundColor: "whitesmoke",
-            width: "30rem",
           }}
           className="d-flex fd-row p-1 rounded"
         >
-          <div className="mr-auto">
+          <div className="mr-2">
             {formatter.format(new Date(tick.timestamp))} GMT-08:00
           </div>
 
@@ -195,7 +194,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             >
               -
             </button>
-            <div>{FRAME_RATES[state.fpsIdx]} FPS</div>
+            <div className="btn">{FRAME_RATES[state.fpsIdx]} FPS</div>
             <button
               title="Speed Up"
               className="btn btn-sm btn-secondary mr-1"
