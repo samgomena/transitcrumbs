@@ -13,11 +13,6 @@ import "leaflet/dist/leaflet.css";
 
 const CTRAN_GARAGE = [45.638574, -122.603547];
 
-type LatLng = {
-  lat: number;
-  lon: number;
-};
-
 type MapProps = {
   center?: [number, number];
   zoom?: number;
@@ -59,12 +54,11 @@ const Map: FunctionComponent<MapProps> = ({
       style={{
         height: "100%",
         width: "100%",
-        opacity: state.loading ? 0.5 : 1,
       }}
     >
       <TileLayer url={templateUrl} attribution={attribution} />
       <Control position="topleft">
-        {state.loading && <Loading style={{ width: "26px", height: "26px" }} />}
+        {loading ? <Loading style={{ width: "26px", height: "26px" }} /> : null}
       </Control>
       {!loading && data && data.breadcrumbs.length > 0 && (
         <>
