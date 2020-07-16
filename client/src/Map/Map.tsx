@@ -2,6 +2,8 @@ import React, { FunctionComponent } from "react";
 import { Map as LeafletMap, TileLayer, Polyline } from "react-leaflet";
 
 import { useAppState } from "../reducer";
+import Control from "../Control/Control";
+import Loading from "../components/Loading";
 import MovingMarker from "../Markers/MovingMarker";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
@@ -57,6 +59,9 @@ const Map: FunctionComponent<MapProps> = ({
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer url={templateUrl} attribution={attribution} />
+      <Control position="topleft">
+        <Loading style={{ width: "26px", height: "26px" }} loading={true} />
+      </Control>
       {!loading && data && data.breadcrumbs.length > 0 && (
         <>
           <MovingMarker date={date} breadcrumbs={data.breadcrumbs} />
