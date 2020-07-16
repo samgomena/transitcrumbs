@@ -82,7 +82,7 @@ const Map: FunctionComponent<MapProps> = ({
                   color={colors[idx]}
                 /> */}
                 <Hotline
-                  breadcrumbs={data.breadcrumbs.filter(
+                  positions={data.breadcrumbs.filter(
                     ({ lat, lon, event_no_trip }: Breadcrumb) =>
                       unique_trip === event_no_trip &&
                       lat !== null &&

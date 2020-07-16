@@ -10,26 +10,26 @@ import { distance } from "../utils";
 require("leaflet-hotline")(L);
 
 type Props = {
-  breadcrumbs: Array<Breadcrumb>;
+  positions: Array<Breadcrumb>;
 } & PolylineProps;
 
 class Hotline extends Path<PolylineProps, L.Polyline> {
-  createLeafletElement({ breadcrumbs, leaflet }: Props) {
-    const positions = breadcrumbs.map(({ lat, lon, act_time }, idx) => {
+  createLeafletElement({ positions, leaflet }: Props) {
+    const positionsWSpeed = positions.map(({ lat, lon, act_time }, idx) => {
       // Set last LatLng 'heat' to 0 as it probably doesn't matter
-      if (idx === breadcrumbs.length - 1) {
+      if (idx === positions.length - 1) {
         return [lat, lon, 0];
       }
 
       return [
         lat,
         lon,
-        distance(lat, lon, breadcrumbs[idx + 1].lat, breadcrumbs[idx + 1].lon) *
+        distance(lat, lon, positions[idx + 1].lat, positions[idx + 1].lon) *
           (act_time / 60 / 60),
       ];
     });
     // @ts-ignore: This is egregious and I hate it; I'll be damned if it doesn't work
-    return L.hotline(positions, {
+    return L.hotline(positionsWSpeed, {
       outlineWidth: 0,
     }).addTo(leaflet?.map);
   }
