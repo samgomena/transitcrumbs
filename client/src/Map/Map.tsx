@@ -42,7 +42,7 @@ const Map: FunctionComponent<MapProps> = ({
   const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`;
 
   const [state, _] = useAppState();
-  let { date, trips, vehicle } = state;
+  const { date, trips, vehicle } = state;
 
   const { data, loading, error } = useTripBreadcrumbs(date, trips);
   data && data.unique_trips.forEach(() => colors.push(generateColor()));

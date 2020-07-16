@@ -29,8 +29,8 @@ interface Action {
 
 const initialState: State = {
   loading: false,
-  route: null,
-  date: null,
+  date: "2020-03-11",
+  route: 105,
   vehicle: null,
   trips: [],
 };

@@ -144,8 +144,6 @@ export type TripsByBlock = Record<number, Array<TripDataType>>;
 export const Trips = (props: any) => {
   const [state, dispatch] = useAppState();
   let { route, date } = state;
-  date = "2020-03-11";
-  route = 105;
 
   if (!route || !date) return null;
 
