@@ -37,9 +37,9 @@ export const Routes = (props: any): ReactElement => {
 
   return (
     <div>
-      {/* <div>Route</div> */}
       <select
         className="form-control mb-2"
+        value={state.route ?? ""}
         onChange={(e) =>
           dispatch({ type: Actions.SET_ROUTE, payload: e.target.value })
         }
@@ -115,6 +115,7 @@ export const Vehicles = (props: any) => {
       <div>Vehicle ID</div>
       <select
         className="form-control mb-2"
+        value={state.vehicle ?? ""}
         onChange={(e) =>
           dispatch({ type: Actions.SET_VEHICLE, payload: e.target.value })
         }
