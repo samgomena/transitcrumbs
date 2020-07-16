@@ -6,7 +6,7 @@ import SplitPane from "react-split-pane";
 // @ts-ignore: waiting for @next to expose typings
 import Pane from "react-split-pane/lib/Pane";
 
-import { client } from "./api";
+import client from "./api";
 
 import Map from "./Map/Map";
 import StateProvider from "./reducer";

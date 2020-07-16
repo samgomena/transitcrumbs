@@ -7,7 +7,7 @@ const link = new HttpLink({
   uri: "http://localhost:8080/v1/graphql",
 });
 
-export const client = new ApolloClient({
+const client = new ApolloClient({
   // Provide required constructor fields
   cache: cache,
   link: link,
@@ -20,4 +20,4 @@ export const client = new ApolloClient({
   },
 });
 
-export const route_one: L.LatLngTuple[] = [[45.63803, -122.60242]];
+export default client;

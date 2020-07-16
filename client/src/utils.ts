@@ -1,8 +1,3 @@
-export const indexToHue = (index: number, lineLength: number) => {
-  const lineLengthClamp = Math.max(6, lineLength);
-  return (360 * index) / lineLengthClamp;
-};
-
 // See: https://stackoverflow.com/questions/1484506/random-color-generator
 export const generateColor = (): string => {
   // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
@@ -67,13 +62,14 @@ export function distance(
   lon2: number,
   unit: "K" | "M" = "M"
 ) {
-  if (lat1 == lat2 && lon1 == lon2) {
+  if (lat1 === lat2 && lon1 === lon2) {
     return 0;
   } else {
-    const radlat1 = (Math.PI * lat1) / 180;
-    const radlat2 = (Math.PI * lat2) / 180;
+    const toRad = (deg: number) => (deg * Math.PI) / 180.0;
+    const radlat1 = toRad(lat1);
+    const radlat2 = toRad(lat2);
     const theta = lon1 - lon2;
-    const radtheta = (Math.PI * theta) / 180;
+    const radtheta = toRad(theta);
     let dist =
       Math.sin(radlat1) * Math.sin(radlat2) +
       Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
