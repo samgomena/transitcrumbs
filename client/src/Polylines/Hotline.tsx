@@ -35,7 +35,7 @@ class Hotline extends Path<PolylineProps, L.Polyline> {
     // @ts-ignore: This is egregious and I hate it; I'll be damned if it doesn't work
     return L.hotline(positions, {
       outlineWidth: 0,
-    }).addTo(props.leaflet.map);
+    }).addTo(props.leaflet?.map);
   }
 
   updateLeafletElement(fromProps: Props, toProps: Props) {
