@@ -31,11 +31,13 @@ class Hotline extends Path<PolylineProps, L.Polyline> {
     // @ts-ignore: This is egregious and I hate it; I'll be damned if it doesn't work
     return L.hotline(positionsWSpeed, {
       outlineWidth: 0,
+      palette: { 0.0: "red", 0.5: "yellow", 1.0: "green" },
     }).addTo(leaflet?.map);
   }
 
   updateLeafletElement(fromProps: Props, toProps: Props) {
     super.updateLeafletElement(fromProps, toProps);
+    this.leafletElement.redraw();
   }
 }
 

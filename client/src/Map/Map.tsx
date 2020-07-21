@@ -14,14 +14,12 @@ import {
 import { useAppState } from "../reducer";
 import MovingMarker from "../Markers/MovingMarker";
 import Hotline from "../Polylines/Hotline";
-import Control from "../Control/Control";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
 import { generateColor } from "../utils";
 
 import "leaflet/dist/leaflet.css";
-import Loading from "../components/Loading";
-import { LatLngTuple } from "leaflet";
+import { LatLngTuple, layerGroup } from "leaflet";
 
 const CTRAN_GARAGE: LatLngTuple = [45.638574, -122.603547];
 
@@ -80,10 +78,9 @@ const Map: FunctionComponent<MapProps> = ({
         </LayersControl.BaseLayer>
 
         <LayersControl.Overlay checked name="Colored Trip">
-          <FeatureGroup checked>
+          <LayerGroup checked>
             {!loading && data && data.breadcrumbs.length > 0 && (
               <>
-                {/* <MovingMarker date={date} breadcrumbs={data.breadcrumbs} /> */}
                 {data.unique_trips.map(
                   (
                     { event_no_trip: unique_trip }: { event_no_trip: number },
@@ -103,11 +100,11 @@ const Map: FunctionComponent<MapProps> = ({
                 )}
               </>
             )}
-          </FeatureGroup>
+          </LayerGroup>
         </LayersControl.Overlay>
 
         <LayersControl.Overlay name="Velocity Heatmap polyline">
-          <FeatureGroup checked>
+          <LayerGroup>
             {!loading && data && data.breadcrumbs.length > 0 && (
               <>
                 {/* <MovingMarker date={date} breadcrumbs={data.breadcrumbs} /> */}
@@ -128,7 +125,7 @@ const Map: FunctionComponent<MapProps> = ({
                 )}
               </>
             )}
-          </FeatureGroup>
+          </LayerGroup>
         </LayersControl.Overlay>
 
         <LayersControl.Overlay name="Show C-Tran Garage">
