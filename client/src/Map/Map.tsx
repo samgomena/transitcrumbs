@@ -2,6 +2,8 @@ import React, { FunctionComponent } from "react";
 import { Map as LeafletMap, TileLayer, Polyline } from "react-leaflet";
 
 import { useAppState } from "../reducer";
+import Control from "../Control/Control";
+import Loading from "../components/Loading";
 import MovingMarker from "../Markers/MovingMarker";
 import { useBreadcrumbs, useTripBreadcrumbs } from "../Search/Search";
 
@@ -10,11 +12,6 @@ import { generateColor } from "../utils";
 import "leaflet/dist/leaflet.css";
 
 const CTRAN_GARAGE = [45.638574, -122.603547];
-
-type LatLng = {
-  lat: number;
-  lon: number;
-};
 
 type MapProps = {
   center?: [number, number];
@@ -45,7 +42,7 @@ const Map: FunctionComponent<MapProps> = ({
   const attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://carto.com/location-data-services/basemaps/">CartoDB</a> | <a href="https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/">Digitransit</a>`;
 
   const [state, _] = useAppState();
-  let { date, trips, vehicle } = state;
+  const { date, trips, vehicle } = state;
 
   const { data, loading, error } = useTripBreadcrumbs(date, trips);
   data && data.unique_trips.forEach(() => colors.push(generateColor()));
@@ -54,9 +51,15 @@ const Map: FunctionComponent<MapProps> = ({
     <LeafletMap
       center={center}
       zoom={zoom}
-      style={{ height: "100%", width: "100%" }}
+      style={{
+        height: "100%",
+        width: "100%",
+      }}
     >
       <TileLayer url={templateUrl} attribution={attribution} />
+      <Control position="topleft">
+        {loading ? <Loading style={{ width: "26px", height: "26px" }} /> : null}
+      </Control>
       {!loading && data && data.breadcrumbs.length > 0 && (
         <>
           <MovingMarker date={date} breadcrumbs={data.breadcrumbs} />

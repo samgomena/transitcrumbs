@@ -37,9 +37,9 @@ export const Routes = (props: any): ReactElement => {
 
   return (
     <div>
-      {/* <div>Route</div> */}
       <select
         className="form-control mb-2"
+        value={state.route ?? ""}
         onChange={(e) =>
           dispatch({ type: Actions.SET_ROUTE, payload: e.target.value })
         }
@@ -115,6 +115,7 @@ export const Vehicles = (props: any) => {
       <div>Vehicle ID</div>
       <select
         className="form-control mb-2"
+        value={state.vehicle ?? ""}
         onChange={(e) =>
           dispatch({ type: Actions.SET_VEHICLE, payload: e.target.value })
         }
@@ -144,8 +145,6 @@ export type TripsByBlock = Record<number, Array<TripDataType>>;
 export const Trips = (props: any) => {
   const [state, dispatch] = useAppState();
   let { route, date } = state;
-  date = "2020-03-11";
-  route = 105;
 
   if (!route || !date) return null;
 
