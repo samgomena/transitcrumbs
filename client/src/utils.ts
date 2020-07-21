@@ -1,3 +1,10 @@
+export const TZ_OFFSET_MS = new Date().getTimezoneOffset() * 60 * 1000;
+
+export const indexToHue = (index: number, lineLength: number) => {
+  const lineLengthClamp = Math.max(6, lineLength);
+  return (360 * index) / lineLengthClamp;
+};
+
 // See: https://stackoverflow.com/questions/1484506/random-color-generator
 export const generateColor = (): string => {
   // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.

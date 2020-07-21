@@ -4,6 +4,7 @@ import { Marker, MapLayerProps } from "react-leaflet";
 import Control from "../Control/Control";
 
 import { markerIcon } from "./moving_marker";
+import { TZ_OFFSET_MS } from "../utils";
 
 type MovingMarkerProps = {
   breadcrumbs: any;
@@ -50,13 +51,13 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
           positions.push([lat, lon]);
           // Convert act_time from seconds to milliseconds
           timestamps.push(
-            new Date(date).getTime() + act_time * 1000 - 28800000
+            new Date(date).getTime() + (act_time * 1000 - TZ_OFFSET_MS)
           );
           return [positions, timestamps];
         },
         [[], []]
       ),
-    [breadcrumbs]
+    [breadcrumbs, date]
   );
 
   // TODO: Ensure positions.length === timestamps.length
@@ -179,12 +180,11 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
         <div
           style={{
             backgroundColor: "whitesmoke",
-            width: "30rem",
           }}
           className="d-flex fd-row p-1 rounded"
         >
-          <div className="mr-auto">
-            {formatter.format(new Date(tick.timestamp))} GMT-08:00
+          <div className="mr-2">
+            {formatter.format(new Date(tick.timestamp))} GMT-07:00
           </div>
 
           <div className="btn-group btn-group-sm" role="group">
@@ -195,7 +195,7 @@ const MovingMarker = ({ breadcrumbs, date }: MovingMarkerProps) => {
             >
               -
             </button>
-            <div>{FRAME_RATES[state.fpsIdx]} FPS</div>
+            <div className="btn">{FRAME_RATES[state.fpsIdx]} FPS</div>
             <button
               title="Speed Up"
               className="btn btn-sm btn-secondary mr-1"
