@@ -17,12 +17,12 @@
 !client/package.json
 !client/yarn.lock
 
-!data_processing/
-!data_processing/python
-!data_processing/python/Pipfile*
-!data_processing/python/*.py
-!data_processing/python/*.ipynb
-!data_processing/*.md
+!data/
+!data/python
+!data/python/Pipfile*
+!data/python/*.py
+!data/python/*.ipynb
+!data/*.md
 
 # And of course, this fine file
 !.gitignore

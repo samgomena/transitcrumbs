@@ -6,7 +6,7 @@
 docker run --name ctran_db -d -e POSTGRES_USER=ctran POSTGRES_PASSWORD=ctran POSTGRES_DB=ctran postgres:latest
 
 # Optional but useful; convert tsv to csv
-# Note: postgres will likely complain about '\t' delimiters
+# Note: postgres will likely complain about '\t' delimiters so this is recommended
 for file in ./*.tsv; do
     tr '\t' ',' < $file > $(basename $file .tsv).csv
     # Uncomment to delete tsv files
